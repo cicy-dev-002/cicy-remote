@@ -12,6 +12,6 @@
 # if (-not $tsIP) { throw "Tailscale IP not assigned." }
 # echo "TAILSCALE_IP=$tsIP" >> $env:GITHUB_ENV
 
-& "$env:ProgramFiles(x86)\Cloudflared\cloudflared.exe" tunnel run --token $env:TAILSCALE_AUTH_KEY
+& "$env:ProgramFiles(x86)\cloudflared\cloudflared.exe" tunnel run --token $env:TAILSCALE_AUTH_KEY
 
 
