@@ -67,9 +67,9 @@ jobs:
 
       - name: Connect to Tailscale
         env:
-          GITHUB_ACTION_CF_TUNNEL: ${{ secrets.GITHUB_ACTION_CF_TUNNEL }}
+          GA_UBUNTU_CF_TOKEN: ${{ secrets.GA_UBUNTU_CF_TOKEN }}
         run: |
-          cloudflared tunnel run --token ${GITHUB_ACTION_CF_TUNNEL}
+          cloudflared tunnel run --token ${GA_UBUNTU_CF_TOKEN}
 
       - name: Restore systemctl hooks
         run: bash .github/workflows/scripts/restore-systemctl.sh
