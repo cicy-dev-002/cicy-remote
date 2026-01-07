@@ -71,4 +71,5 @@ jobs:
         if: steps.cache-pip.outputs.cache-hit == 'true'
         shell: pwsh
         run: |
-          jupyter --version
+          python -m jupyter --version
+
