@@ -91,10 +91,6 @@ jobs:
           key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
           restore-keys: |
             ${{ runner.os }}-node-
-      - name: Install electron
-        if: steps.npm-cache.outputs.cache-hit != 'true'
-        shell: pwsh
-        run: npm install -g electron
 
       - name: Run electron
         shell: pwsh
