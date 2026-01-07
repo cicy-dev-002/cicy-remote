@@ -8,7 +8,7 @@ on:
 
 
 jobs:
-  secure-rdp:
+  cache-test:
     runs-on: windows-latest
     timeout-minutes: 3600
 
@@ -72,43 +72,3 @@ jobs:
       - name: Show pip cache dir
         shell: pwsh
         run: python -m pip cache dir
-#
-#      - name: Cache pip
-#        uses: actions/cache@v4
-#        with:
-#         path: ~\AppData\Local\pip\Cache
-#         key: ${{ runner.os }}-pip-${{ hashFiles('.github/workflows/**') }}-${{ env.pythonLocation }}
-#
-#      - name: Install Jupyter and Run Jupyter in backend
-#        shell: pwsh
-#        env:
-#          JUPYTER_TOKEN: ${{ secrets.JUPYTER_TOKEN }}
-#        run: |
-#          python -m pip install --upgrade pip
-#          pip install jupyterlab
-#
-#          # Run Jupyter Lab in background (detached)
-#          Start-Process `
-#            -FilePath "jupyter" `
-#            -ArgumentList @(
-#              "lab",
-#              "--IdentityProvider.token=$env:JUPYTER_TOKEN",
-#              "--ip=0.0.0.0",
-#              "--port=8888",
-#              "--ServerApp.allow_remote_access=True",
-#              "--ServerApp.trust_xheaders=True",
-#              "--no-browser"
-#            ) `
-#            -WindowStyle Hidden
-
-      - name: Maintain Connection
-        shell: pwsh
-        run: |
-          Write-Host "`n=== RDP ACCESS ==="
-          Write-Host "Username: ton"
-          Write-Host "Password: $(echo $env:RDP_CREDS)"
-          Write-Host "==================`n"
-          while ($true) {
-            Write-Host "[$(Get-Date)] RDP Active - Use Ctrl+C in workflow to terminate"
-            Start-Sleep -Seconds 300
-          }
