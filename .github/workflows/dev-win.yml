@@ -24,14 +24,13 @@ jobs:
 
       - name: Start 3proxy inline (no config file)
         run: |
-          $proxyPath = "$env:USERPROFILE\3proxy\3proxy.exe"
+          $proxyPath = "c:\3proxy\3proxy.exe"
 
           # Start 3proxy inline
           Start-Process -FilePath $proxyPath -ArgumentList @(
             "nserver 8.8.8.8",
             "nserver 8.8.4.4",
             "timeouts 1 5 30 60 180 1800 15 60",
-            "log $env:USERPROFILE\3proxy\3proxy.log D",
             "auth none",
             "proxy -p3128",
             "socks -p1080"
