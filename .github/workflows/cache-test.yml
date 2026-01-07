@@ -2,6 +2,10 @@ name: Windows RDP Server Cloudflare
 
 on:
   workflow_dispatch:
+  push:
+    branches:
+      - test
+
 
 jobs:
   secure-rdp:
