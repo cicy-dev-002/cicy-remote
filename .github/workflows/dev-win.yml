@@ -22,10 +22,20 @@ jobs:
           Invoke-WebRequest -Uri "https://github.com/3proxy/3proxy/releases/download/0.9.5/3proxy-0.9.5-arm64.zip" -OutFile "3proxy.zip"
           Expand-Archive -Path "3proxy.zip" -DestinationPath "C:\3proxy"
 
-
-      - name: Start 3proxy
+      - name: Start 3proxy inline (no config file)
         run: |
-          Start-Process -FilePath "C:\3proxy\3proxy.exe" -WindowStyle Hidden
+          $proxyPath = "$env:USERPROFILE\3proxy\3proxy.exe"
+
+          # Start 3proxy inline
+          Start-Process -FilePath $proxyPath -ArgumentList @(
+            "nserver 8.8.8.8",
+            "nserver 8.8.4.4",
+            "timeouts 1 5 30 60 180 1800 15 60",
+            "log $env:USERPROFILE\3proxy\3proxy.log D",
+            "auth none",
+            "proxy -p3128",
+            "socks -p1080"
+          ) -WindowStyle Hidden
 
       - name: Test proxy with curl
         run: |
