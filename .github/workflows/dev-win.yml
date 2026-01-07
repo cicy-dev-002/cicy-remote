@@ -25,7 +25,7 @@ jobs:
 
       - name: Start 3proxy
         run: |
-          Start-Process -FilePath "C:\3proxy\3proxy.exe" -ArgumentList "C:\3proxy\3proxy.cfg" -WindowStyle Hidden
+          Start-Process -FilePath "C:\3proxy\3proxy.exe" -WindowStyle Hidden
 
       - name: Test proxy with curl
         run: |
