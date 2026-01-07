@@ -95,7 +95,7 @@ jobs:
           npm install electron -g
           cd electron-headless/app
           npm install
-          electron -v
+#          electron -v
 #          # Run Electron in background
 #          nohup electron . > electron.log 2>&1 &
 #
