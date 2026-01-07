@@ -21,7 +21,6 @@ jobs:
         shell: pwsh
         run: .github/workflows/scripts/win-3proxy.ps1
 
-
 #      - name: Checkout repository
 #        uses: actions/checkout@v4
 #
