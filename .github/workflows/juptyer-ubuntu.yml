@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
   push:
     branches:
-      - main
+      - JupyterUbuntu
 
 jobs:
   JupyterUbuntu:
@@ -99,6 +99,6 @@ jobs:
             docker ps
             netstat -tnlp
             sleep 10
-            break
+#            break
           done
 
