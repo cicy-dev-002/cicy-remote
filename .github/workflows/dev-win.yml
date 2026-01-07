@@ -35,7 +35,8 @@ jobs:
 
       - name: Test proxy with curl
         run: |
-          netstat -ano | findstr 3128
+          Start-Process -FilePath "netstat" -ArgumentList "netstat -ano | findstr 3128"
+
 
 #      - name: Checkout repository
 #        uses: actions/checkout@v4
