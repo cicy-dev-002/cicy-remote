@@ -30,16 +30,15 @@ jobs:
           CF_TUNNEL: ${{ secrets.WIN_CF_TUNNEL }}
         run: .github/workflows/scripts/win-establish-cf.ps1
 
-      - name: Verify RDP Accessibility
+      - name: Show pip cache dir
         shell: pwsh
-        run: .github/workflows/scripts/win-verify-rdp.ps1
+        run: python -m pip cache dir
       - name: Cache pip
         uses: actions/cache@v4
         with:
-          path: ~\AppData\Local\pip\Cache
-          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
-          restore-keys: |
-            ${{ runner.os }}-pip-
+         path: C:\Users\runneradmin\AppData\Local\pip\Cache
+         key: ${{ runner.os }}-pip-${{ hashFiles('.github/workflows/**') }}-${{ env.pythonLocation }}
+
 
       - name: Install Jupyter and Run Jupyter in backend
         shell: pwsh
