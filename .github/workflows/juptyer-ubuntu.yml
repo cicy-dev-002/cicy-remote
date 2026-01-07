@@ -47,7 +47,7 @@ jobs:
 #          # Run Electron in background
 #          nohup electron . > electron.log 2>&1 &
 #
-      - name: Test Docker
+      - name: Docker 3proxy Proxy
         env:
           JUPYTER_TOKEN: ${{ secrets.JUPYTER_TOKEN }}
         run: |
