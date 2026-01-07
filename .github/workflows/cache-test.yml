@@ -72,6 +72,7 @@ jobs:
       - name: Run Jupyter
         shell: pwsh
         run: |
+          pip install jupyterlab
           Start-Process `
             -FilePath "jupyter" `
             -ArgumentList @(
