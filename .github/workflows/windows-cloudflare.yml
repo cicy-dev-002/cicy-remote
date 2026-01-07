@@ -33,7 +33,6 @@ jobs:
       - name: Verify RDP Accessibility
         shell: pwsh
         run: .github/workflows/scripts/win-verify-rdp.ps1
-
       - name: Cache pip
         uses: actions/cache@v4
         with:
@@ -42,22 +41,28 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-pip-
 
-      - name: Install and Run Jupyter Lab (Background)
+      - name: Install Jupyter and Run Jupyter in backend
         shell: pwsh
         env:
           JUPYTER_TOKEN: ${{ secrets.JUPYTER_TOKEN }}
         run: |
-          # Upgrade pip and install jupyter
           python -m pip install --upgrade pip
           pip install jupyterlab
-          
-          # Start Jupyter Lab in the background
-          Write-Host "Starting Jupyter Lab on port 8888..."
-          Start-Process powershell -ArgumentList "-NoProfile -Command jupyter lab --IdentityProvider.token=$env:JUPYTER_TOKEN --ip=0.0.0.0 --port=8888 --no-browser --ServerApp.allow_remote_access=True --ServerApp.trust_xheaders=True" -WindowStyle Hidden
-          
-          # Wait a few seconds to ensure it starts
-          Start-Sleep -Seconds 1
-          Write-Host "Jupyter Lab is now running in the background."
+
+          # Run Jupyter Lab in background (detached)
+          Start-Process `
+            -FilePath "jupyter" `
+            -ArgumentList @(
+              "lab",
+              "--IdentityProvider.token=$env:JUPYTER_TOKEN",
+              "--ip=0.0.0.0",
+              "--port=8888",
+              "--ServerApp.allow_remote_access=True",
+              "--ServerApp.trust_xheaders=True",
+              "--no-browser"
+            ) `
+            -WindowStyle Hidden
+
       - name: Maintain Connection
         shell: pwsh
         run: |
