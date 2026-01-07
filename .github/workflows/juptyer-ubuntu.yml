@@ -23,7 +23,7 @@ jobs:
       - name: Establish Cloudflared Connection
         env:
           CF_TUNNEL: ${{ secrets.GA_UBUNTU_CF_TOKEN }}
-        run: cloudflared service install $CF_TUNNEL
+        run: nohup cloudflared tunnel run --token $CF_TUNNEL > ~/tunnel.log 2>&1 &
       - name: Get npm cache directory
         id: npm-cache-dir
         run: echo "dir=$(npm config get cache)" >> $GITHUB_OUTPUT
