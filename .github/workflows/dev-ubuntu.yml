@@ -12,12 +12,18 @@ jobs:
     timeout-minutes: 3600
 
     steps:
-      - name: GetSystem Info
+      - name: Get System Info
         run: |
+          curl api.myip.com
           free -m
           df -h
-          curl api.myip.com
-
+      - name: Cache APT packages
+        uses: actions/cache@v4
+        with:
+          path: /var/cache/apt/archives
+          key: ${{ runner.os }}-apt-${{ hashFiles('**/apt-packages.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-apt-
       - name: Update APT
         run: sudo apt-get update
       - name: Prevent service auto-start during apt
@@ -35,7 +41,7 @@ jobs:
         run: bash .github/workflows/scripts/precreate-users.sh
 
       - name: Install Desktop and VNC Server
-        run: bash .github/workflows/scripts/install-desktop-vnc.sh
+        run: bash .github/workflows/scripts/install-desktop.sh
 
       - name: Validate system users and tmpfiles
         run: bash .github/workflows/scripts/validate-tmpfiles.sh
@@ -73,7 +79,7 @@ jobs:
           npm install
           electron -v
           # Run Electron in background
-          nohup electron . > electron.log 2>&1 &
+#          nohup electron . > electron.log 2>&1 &
 
       - name: Maintain Connection
         run: |
