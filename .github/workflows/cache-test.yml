@@ -58,7 +58,7 @@ jobs:
         uses: actions/cache@v4
         with:
           path: ~\appdata\local\pip\cache
-          key: cicy-window-cache-pip
+          key: cicy-window-cache-pip-v1
 
       - name: Install Jupyter
         if: steps.cache-pip.outputs.cache-hit != 'true'
