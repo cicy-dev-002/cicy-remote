@@ -10,7 +10,7 @@ jobs:
   dev-ubuntu:
     runs-on: ubuntu-latest
     container:
-      image: ghcr.io/cicybot/ubuntu-vnc
+      image: ghcr.io/cicybot/ubuntu-vnc:1.0.1
     timeout-minutes: 3600
 
     steps:
