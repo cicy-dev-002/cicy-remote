@@ -16,24 +16,6 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Configure Core RDP Settings
-        shell: pwsh
-        run: .github/workflows/scripts/win-configure-rdp.ps1
-
-      - name: Create RDP User with Secure Password
-        shell: pwsh
-        run: .github/workflows/scripts/win-create-user.ps1
-
-      - name: Install Cloudflared
-        shell: pwsh
-        run: .github/workflows/scripts/win-install-cloudflared.ps1
-
-      - name: Establish Cloudflared Connection
-        shell: pwsh
-        env:
-          CF_TUNNEL: ${{ secrets.WIN_CF_TUNNEL }}
-        run: .github/workflows/scripts/win-establish-cf.ps1
-
       - name: Restore cache
         id: cache
         uses: actions/cache@v4
