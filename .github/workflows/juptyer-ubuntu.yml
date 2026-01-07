@@ -51,7 +51,10 @@ jobs:
       - name: Test Docker
         env:
           JUPYTER_TOKEN: ${{ secrets.JUPYTER_TOKEN }}
-        run: docker ps
+        run: |
+          docker run --name 3proxy --rm -d -p "8082:3128/tcp" ghcr.io/tarampampam/3proxy:1
+          
+          
 
       - name: Restore pip cache
         id: cache-pip
@@ -84,3 +87,4 @@ jobs:
           sleep 10
           ps aux | grep jupyter
           ps aux | grep cloudflared
+          docker ps
