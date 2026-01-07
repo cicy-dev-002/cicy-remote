@@ -9,6 +9,8 @@ on:
 jobs:
   JupyterUbuntu:
     runs-on: ubuntu-latest
+    container:
+      image: ghcr.io/cicybot/ubuntu-vnc:1.0.1
     timeout-minutes: 3600
 
     steps:
@@ -17,6 +19,7 @@ jobs:
           curl api.myip.com
           free -m
           df -h
+
       - name: Checkout repository
         uses: actions/checkout@v4
 
@@ -29,26 +32,26 @@ jobs:
           CF_TUNNEL: ${{ secrets.GA_UBUNTU_CF_TOKEN }}
         run: nohup cloudflared tunnel run --token $CF_TUNNEL > ~/tunnel.log 2>&1 &
 
-#      - name: Get npm cache directory
-#        id: npm-cache-dir
-#        run: echo "dir=$(npm config get cache)" >> $GITHUB_OUTPUT
-#
-#      - name: Restore npm cache
-#        uses: actions/cache@v4
-#        id: npm-cache
-#        with:
-#          path: ${{ steps.npm-cache-dir.outputs.dir }}
-#          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
-#          restore-keys: |
-#            ${{ runner.os }}-node-
-#
-#      - name: Run Electron
-#        run: |
-#          git clone https://github.com/cicybot/electron-headless.git
-#          cd electron-headless/electron
-#          npm install electron -g
-#          npm install
-#          electron -v
+      - name: Get npm cache directory
+        id: npm-cache-dir
+        run: echo "dir=$(npm config get cache)" >> $GITHUB_OUTPUT
+
+      - name: Restore npm cache
+        uses: actions/cache@v4
+        id: npm-cache
+        with:
+          path: ${{ steps.npm-cache-dir.outputs.dir }}
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+
+      - name: Run Electron
+        run: |
+          git clone https://github.com/cicybot/electron-headless.git
+          cd electron-headless/electron
+          npm install electron -g
+          npm install
+          electron -v
 #          # Run Electron in background
 #          nohup electron . > electron.log 2>&1 &
 #
