@@ -6,7 +6,7 @@ on:
     branches:
       - Jupyter
 jobs:
-  Jupter:
+  JupterWindows:
     runs-on: windows-latest
     timeout-minutes: 3600
 

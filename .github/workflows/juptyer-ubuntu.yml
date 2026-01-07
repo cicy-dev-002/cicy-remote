@@ -1,0 +1,103 @@
+name: Jupyter Ubuntu
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - JupyterUbuntu
+      - main
+
+jobs:
+  JupyterUbuntu:
+    runs-on: ubuntu-latest
+    timeout-minutes: 3600
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install Cloudflared
+        run: |
+          bash <(curl -fsSL https://raw.githubusercontent.com/cicybot/cloudflare-tunnel-proxy/refs/heads/main/install-cloudflared.sh)
+          cloudflared -v
+      - name: Establish Cloudflared Connection
+        env:
+          CF_TUNNEL: ${{ secrets.GA_UBUNTU_CF_TOKEN }}
+        run: cloudflared service install $CF_TUNNEL
+      - name: Get npm cache directory
+        id: npm-cache-dir
+        run: echo "dir=$(npm config get cache)" >> $GITHUB_OUTPUT
+#
+#      - name: Restore npm cache
+#        uses: actions/cache@v4
+#        id: npm-cache
+#        with:
+#          path: ${{ steps.npm-cache-dir.outputs.dir }}
+#          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+#          restore-keys: |
+#            ${{ runner.os }}-node-
+#
+#      - name: Run Electron
+#        run: |
+#          git clone https://github.com/cicybot/electron-headless.git
+#          cd electron-headless/electron
+#          npm install electron -g
+#          npm install
+#          electron -v
+#          # Run Electron in background
+#          nohup electron . > electron.log 2>&1 &
+#
+
+
+      - name: Test Docker
+        env:
+          JUPYTER_TOKEN: ${{ secrets.JUPYTER_TOKEN }}
+        run: docker ps
+
+      - name: Restore pip cache
+        id: cache-pip
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
+
+      - name: Install Jupyter and Run Jupyter in background
+        env:
+          JUPYTER_TOKEN: ${{ secrets.JUPYTER_TOKEN }}
+        run: |
+          pip install --upgrade pip
+          pip install jupyterlab
+          jupyter --version
+          # Run Jupyter Lab in background
+          nohup jupyter lab \
+            --ServerApp.token=$JUPYTER_TOKEN \
+            --ip=0.0.0.0 \
+            --port=8888 \
+            --ServerApp.allow_remote_access=True \
+            --ServerApp.trust_xheaders=True \
+            --no-browser > jupyter.log 2>&1 &
+
+      - name: Maintain Connection
+        run: |
+          echo "=================="
+          while true; do
+            for name in electron jupyter cloudflared; do
+              pids=$(pgrep -x $name)
+              if [ -n "$pids" ]; then
+                echo "=== $name ==="
+                for pid in $pids; do
+                  cpu=$(ps -p $pid -o %cpu=)
+                  mem=$(ps -p $pid -o rss=)
+                  start=$(ps -p $pid -o lstart=)
+                  echo "PID: $pid | CPU: $cpu | Memory(KB): $mem | StartTime: $start"
+                done
+              else
+                echo "$name process not running."
+              fi
+            done
+            echo "[$(date)] Active - Use Ctrl+C in workflow to terminate"
+            break
+            sleep 10
+          done
