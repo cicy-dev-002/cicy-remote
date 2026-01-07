@@ -50,7 +50,3 @@ jobs:
           } else {
             Write-Host "Directory does not exist"
           }
-
-      - name: Show pip cache dir
-        shell: pwsh
-        run: python -m pip cache dir
