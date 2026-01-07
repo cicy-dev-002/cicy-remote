@@ -18,16 +18,37 @@ jobs:
           curl api.myip.com
           free -m
           df -h
-      - name: Cache APT packages
+
+      # Step 4: Cache downloaded debs (user folder)
+      - name: Cache APT debs
         uses: actions/cache@v4
         with:
-          path: /var/cache/apt/archives
+          path: $HOME/apt-cache
           key: ${{ runner.os }}-apt-${{ hashFiles('**/apt-packages.txt') }}
           restore-keys: |
             ${{ runner.os }}-apt-
 
+      # Step 5: Restore cached debs
+      - name: Restore cached debs
+        run: |
+          sudo mkdir -p /var/cache/apt/archives
+          sudo cp $HOME/apt-cache/*.deb /var/cache/apt/archives/ || true
+
+      # Step 6: Update apt
       - name: Update APT
-        run: sudo apt-get update
+        run: sudo apt-get update -qq
+
+      # Step 7: Install packages
+      - name: Install APT packages
+        run: |
+          xargs -a apt-packages.txt sudo apt-get install -yq
+
+      # Step 8: Save debs to cache
+      - name: Save downloaded debs
+        run: |
+          mkdir -p $HOME/apt-cache
+          sudo cp /var/cache/apt/archives/*.deb $HOME/apt-cache || true
+
       - name: Prevent service auto-start during apt
         run: |
           echo -e '#!/bin/sh\nexit 101' | sudo tee /usr/sbin/policy-rc.d >/dev/null
