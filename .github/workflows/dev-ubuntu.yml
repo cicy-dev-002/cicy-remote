@@ -6,31 +6,28 @@ on:
     branches:
       - main
 
-
 jobs:
   dev-ubuntu:
     runs-on: ubuntu-latest
     timeout-minutes: 3600
 
     steps:
+      # Step 1: Checkout repo
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # Step 2: System info
       - name: Get System Info
         run: |
           curl api.myip.com
           free -m
           df -h
+
+      # Step 4: Create cache folder
       - name: Create APT cache folder
         run: mkdir -p $HOME/apt-cache
 
-
-      - name: Cache APT debs
-        uses: actions/cache@v4
-        with:
-          path: $HOME/apt-cache
-          key: ${{ runner.os }}-apt-${{ hashFiles('**/apt-packages.txt') }}
-          restore-keys: |
-            ${{ runner.os }}-apt-
-
-      # Step 5: Restore cached debs
+      # Step 5: Restore cached debs (if any)
       - name: Restore cached debs
         run: |
           sudo mkdir -p /var/cache/apt/archives
@@ -40,40 +37,51 @@ jobs:
       - name: Update APT
         run: sudo apt-get update -qq
 
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Prevent service auto-start during apt
+      # Step 7: Prevent service auto-start during apt
+      - name: Prevent service auto-start
         run: |
           echo -e '#!/bin/sh\nexit 101' | sudo tee /usr/sbin/policy-rc.d >/dev/null
           sudo chmod +x /usr/sbin/policy-rc.d
 
-
+      # Step 8: Disable systemctl hooks
       - name: Disable systemctl hooks
         run: bash .github/workflows/scripts/disable-systemctl.sh
 
-      - name: Pre-create system users and directories
+      # Step 9: Pre-create system users
+      - name: Pre-create system users
         run: bash .github/workflows/scripts/precreate-users.sh
 
+      # Step 10: Install APT packages
       - name: Install APT packages
         run: |
-          ls -alh
           xargs -a apt-packages.txt sudo apt-get install -yq
 
+      # Step 11: Save downloaded debs for caching
       - name: Save downloaded debs
         run: |
-           mkdir -p $HOME/apt-cache
-           sudo cp /var/cache/apt/archives/*.deb $HOME/apt-cache || true
-#
-#      - name: Install Desktop
-#        run: bash .github/workflows/scripts/install-desktop.sh
-#
+          mkdir -p $HOME/apt-cache
+          sudo cp /var/cache/apt/archives/*.deb $HOME/apt-cache || true
+
+      # Step 12: Cache APT debs (after installation)
+      - name: Cache APT debs
+        uses: actions/cache@v4
+        with:
+          path: $HOME/apt-cache
+          key: ${{ runner.os }}-apt-${{ hashFiles('**/apt-packages.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-apt-
+
+      # Step 13: Optional: Install Desktop
+      # - name: Install Desktop
+      #   run: bash .github/workflows/scripts/install-desktop.sh
+
+      # Step 14: Validate users and tmpfiles
       - name: Validate system users and tmpfiles
         run: bash .github/workflows/scripts/validate-tmpfiles.sh
 
+      # Step 15: Re-enable service start
       - name: Re-enable service start
         run: bash .github/workflows/scripts/reenable-services.sh
-
 #      - name: Install Cloudflared
 #        run: |
 #          bash <(curl -fsSL https://raw.githubusercontent.com/cicybot/cloudflare-tunnel-proxy/refs/heads/main/install-cloudflared.sh)
