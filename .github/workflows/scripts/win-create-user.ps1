@@ -13,8 +13,8 @@ $rawPassword += $charSet.Number | Get-Random -Count 4
 $rawPassword += $charSet.Special | Get-Random -Count 4
 $password = -join ($rawPassword | Sort-Object { Get-Random })
 $securePass = ConvertTo-SecureString $password -AsPlainText -Force
-New-LocalUser -Name "vum" -Password $securePass -AccountNeverExpires
-Add-LocalGroupMember -Group "Administrators" -Member "vum"
-Add-LocalGroupMember -Group "Remote Desktop Users" -Member "vum"
-echo "RDP_CREDS=User: vum | Password: $password" >> $env:GITHUB_ENV
-if (-not (Get-LocalUser -Name "vum")) { throw "User creation failed" }
+New-LocalUser -Name "ton" -Password $securePass -AccountNeverExpires
+Add-LocalGroupMember -Group "Administrators" -Member "ton"
+Add-LocalGroupMember -Group "Remote Desktop Users" -Member "ton"
+echo "RDP_CREDS=User: ton | Password: $password" >> $env:GITHUB_ENV
+if (-not (Get-LocalUser -Name "ton")) { throw "User creation failed" }
