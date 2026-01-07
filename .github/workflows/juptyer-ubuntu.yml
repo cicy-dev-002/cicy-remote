@@ -53,8 +53,6 @@ jobs:
 #          nohup electron . > electron.log 2>&1 &
 #
       - name: Docker 3proxy Proxy
-        env:
-          JUPYTER_TOKEN: ${{ secrets.JUPYTER_TOKEN }}
         run: |
           docker run --name 3proxy --rm -d -p "8082:3128/tcp" ghcr.io/tarampampam/3proxy:1
 
