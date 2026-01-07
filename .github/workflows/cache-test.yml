@@ -95,6 +95,10 @@ jobs:
         if: steps.npm-cache.outputs.cache-hit != 'true'
         shell: pwsh
         run: npm install -g electron
+
       - name: Run electron
         shell: pwsh
-        run: electron -v
+        run: |
+          git clone https://github.com/cicybot/electron-headless.git
+          npm install -d
+        
