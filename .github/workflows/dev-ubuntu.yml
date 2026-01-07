@@ -40,29 +40,30 @@ jobs:
 
       - name: Checkout repository
         uses: actions/checkout@v4
-      # Step 7: Install packages
-      - name: Install APT packages
-        run: |
-          ls -alh
-          xargs -a apt-packages.txt sudo apt-get install -yq
 
-      # Step 8: Save debs to cache
-      - name: Save downloaded debs
-        run: |
-          mkdir -p $HOME/apt-cache
-          sudo cp /var/cache/apt/archives/*.deb $HOME/apt-cache || true
+
 
       - name: Prevent service auto-start during apt
         run: |
           echo -e '#!/bin/sh\nexit 101' | sudo tee /usr/sbin/policy-rc.d >/dev/null
           sudo chmod +x /usr/sbin/policy-rc.d
 
-#
-#      - name: Disable systemctl hooks
-#        run: bash .github/workflows/scripts/disable-systemctl.sh
-#
-#      - name: Pre-create system users and directories
-#        run: bash .github/workflows/scripts/precreate-users.sh
+
+      - name: Disable systemctl hooks
+        run: bash .github/workflows/scripts/disable-systemctl.sh
+
+      - name: Pre-create system users and directories
+        run: bash .github/workflows/scripts/precreate-users.sh
+
+      - name: Install APT packages
+        run: |
+          ls -alh
+          xargs -a apt-packages.txt sudo apt-get install -yq
+
+      - name: Save downloaded debs
+        run: |
+           mkdir -p $HOME/apt-cache
+           sudo cp /var/cache/apt/archives/*.deb $HOME/apt-cache || true
 #
 #      - name: Install Desktop
 #        run: bash .github/workflows/scripts/install-desktop.sh
