@@ -13,6 +13,20 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+
+
+      - name: Configure Core RDP Settings
+        shell: pwsh
+        run: .github/workflows/scripts/win-configure-rdp.ps1
+
+      - name: Create RDP User with Secure Password
+        shell: pwsh
+        run: .github/workflows/scripts/win-create-user.ps1
+
+      - name: Verify RDP Accessibility
+        shell: pwsh
+        run: .github/workflows/scripts/win-verify-rdp.ps1
+
       - name: Install Cloudflared
         shell: pwsh
         run: .github/workflows/scripts/win-install-cloudflared.ps1
