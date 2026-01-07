@@ -5,7 +5,6 @@ on:
   push:
     branches:
       - JupyterUbuntu
-      - main
 
 jobs:
   JupyterUbuntu:
@@ -53,8 +52,6 @@ jobs:
           JUPYTER_TOKEN: ${{ secrets.JUPYTER_TOKEN }}
         run: |
           docker run --name 3proxy --rm -d -p "8082:3128/tcp" ghcr.io/tarampampam/3proxy:1
-          
-          
 
       - name: Restore pip cache
         id: cache-pip
@@ -83,8 +80,10 @@ jobs:
 
       - name: Maintain Connection
         run: |
-          echo "=================="
-          sleep 10
-          ps aux | grep jupyter
-          ps aux | grep cloudflared
-          docker ps
+          while true; do
+            echo "=================="
+            ps aux | grep jupyter
+            ps aux | grep cloudflared
+            docker ps
+            sleep 300
+          done
