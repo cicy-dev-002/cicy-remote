@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
   push:
     branches:
-      - main
+      - dev
 
 jobs:
   JupyterUbuntu:
@@ -24,6 +24,7 @@ jobs:
           key: ${{ runner.os }}-apt-${{ hashFiles('**/apt-packages.txt') }}
           restore-keys: |
             ${{ runner.os }}-apt-
+
       - name: Update APT
         run: sudo apt-get update
       - name: Prevent service auto-start during apt
