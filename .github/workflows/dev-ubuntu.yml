@@ -71,13 +71,13 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-node-
 
-      - name: Run Electron
-        run: |
-          git clone https://github.com/cicybot/electron-headless.git
-          cd electron-headless/electron
-          npm install electron -g
-          npm install
-          electron -v
+#      - name: Run Electron
+#        run: |
+#          git clone https://github.com/cicybot/electron-headless.git
+#          cd electron-headless/electron
+#          npm install electron -g
+#          npm install
+#          electron -v
           # Run Electron in background
 #          nohup electron . > electron.log 2>&1 &
 
