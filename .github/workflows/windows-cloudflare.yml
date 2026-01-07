@@ -34,7 +34,8 @@ jobs:
         id: cache
         uses: actions/cache@v4
         with:
-          path: ~\cicy
+          path: |
+            ~\cicy
           key: test-cache-windows-v1
 
       - name: Show cache status
