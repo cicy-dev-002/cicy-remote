@@ -40,7 +40,7 @@ jobs:
       - name: Pre-create system users and directories
         run: bash .github/workflows/scripts/precreate-users.sh
 
-      - name: Install Desktop and VNC Server
+      - name: Install Desktop
         run: bash .github/workflows/scripts/install-desktop.sh
 
       - name: Validate system users and tmpfiles
