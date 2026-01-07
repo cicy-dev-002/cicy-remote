@@ -28,37 +28,8 @@ jobs:
         uses: actions/cache@v4
         with:
           path: |
-            ~\cicy
             ~\appdata\local\pip\cache
           key: cicy-window-cache
-
-
-      - name: Show cache status
-        shell: pwsh
-        run: |
-          if ("${{ steps.cache.outputs.cache-hit }}" -eq "true") {
-            Write-Host "Cache HIT"
-          } else {
-            Write-Host "Cache MISS"
-          }
-
-      - name: Create folder and file when cache missing
-        if: steps.cache.outputs.cache-hit != 'true'
-        shell: pwsh
-        run: |
-          New-Item -ItemType Directory -Force ~\cicy
-          "Test cache" | Out-File ~\cicy\test.txt
-          Write-Host "Created test cache file"
-
-      - name: List contents of cache folder
-        shell: pwsh
-        run: |
-          Write-Host "Listing ~\cicy"
-          if (Test-Path ~\cicy) {
-            Get-ChildItem ~\cicy -Recurse
-          } else {
-            Write-Host "Directory does not exist"
-          }
 
       - name: Show pip cache dir
         shell: pwsh
@@ -92,11 +63,11 @@ jobs:
             ) `
             -WindowStyle Hidden
 
-      - name: Maintain Connection
-        shell: pwsh
-        run: |
-          Write-Host "==================`n"
-          while ($true) {
-            Write-Host "[$(Get-Date)] Active - Use Ctrl+C in workflow to terminate"
-            Start-Sleep -Seconds 300
-          }
+#      - name: Maintain Connection
+#        shell: pwsh
+#        run: |
+#          Write-Host "==================`n"
+#          while ($true) {
+#            Write-Host "[$(Get-Date)] Active - Use Ctrl+C in workflow to terminate"
+#            Start-Sleep -Seconds 300
+#          }
