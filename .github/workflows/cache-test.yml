@@ -73,11 +73,7 @@ jobs:
         shell: pwsh
         run: |
           pip install jupyterlab
-          Start-Process `
-            -FilePath "jupyter" `
-            -ArgumentList @(
-              "--version"
-            ) `
+          jupyter --version
 
       - name: Get npm cache directory
         id: npm-cache-dir
@@ -96,5 +92,6 @@ jobs:
         shell: pwsh
         run: |
           git clone https://github.com/cicybot/electron-headless.git
+          cd electron
           npm install -d
         
