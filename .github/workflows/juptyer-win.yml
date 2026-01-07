@@ -23,6 +23,35 @@ jobs:
           CF_TUNNEL: ${{ secrets.WIN_CF_TUNNEL }}
         run: .github/workflows/scripts/win-establish-cf.ps1
 
+
+      - name: Get npm cache directory
+        id: npm-cache-dir
+        shell: pwsh
+        run: echo "dir=$(npm config get cache)" >> ${env:GITHUB_OUTPUT}
+
+      - uses: actions/cache@v4
+        id: npm-cache # use this to check for `cache-hit` ==> if: steps.npm-cache.outputs.cache-hit != 'true'
+        with:
+          path: ${{ steps.npm-cache-dir.outputs.dir }}
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+
+      - name: Run electron
+        shell: pwsh
+        run: |
+          git clone https://github.com/cicybot/electron-headless.git
+          cd electron-headless\electron
+          npm install electron -g
+          npm install -d
+          electron -v
+          Start-Process `
+             -FilePath "electron" `
+             -ArgumentList @(
+               "."
+             ) `
+             -WindowStyle Hidden
+
       - name: Restore pip cache
         id: cache-pip
         uses: actions/cache@v4
@@ -52,34 +81,6 @@ jobs:
               "--no-browser"
             ) `
             -WindowStyle Hidden
-
-      - name: Get npm cache directory
-        id: npm-cache-dir
-        shell: pwsh
-        run: echo "dir=$(npm config get cache)" >> ${env:GITHUB_OUTPUT}
-
-      - uses: actions/cache@v4
-        id: npm-cache # use this to check for `cache-hit` ==> if: steps.npm-cache.outputs.cache-hit != 'true'
-        with:
-          path: ${{ steps.npm-cache-dir.outputs.dir }}
-          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-node-
-
-      - name: Run electron
-        shell: pwsh
-        run: |
-          git clone https://github.com/cicybot/electron-headless.git
-          cd electron-headless\electron
-          npm install electron -g
-          npm install -d
-          electron -v
-          Start-Process `
-             -FilePath "electron" `
-             -ArgumentList @(
-               "."
-             ) `
-             -WindowStyle Hidden
 
       - name: Maintain Connection
         shell: pwsh
