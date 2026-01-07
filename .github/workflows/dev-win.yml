@@ -16,7 +16,21 @@ jobs:
         run: |
           curl api.myip.com
           docker ps
-          docker run --name 3proxy --rm -d -p "8082:3128/tcp" ghcr.io/tarampampam/3proxy:1
+
+      - name: Download 3proxy ARM64
+        run: |
+          Invoke-WebRequest -Uri "https://github.com/3proxy/3proxy/releases/download/0.9.5/3proxy-0.9.5-arm64.zip" -OutFile "3proxy.zip"
+          Expand-Archive -Path "3proxy.zip" -DestinationPath "C:\3proxy"
+
+
+      - name: Start 3proxy
+        run: |
+          Start-Process -FilePath "C:\3proxy\3proxy.exe" -ArgumentList "C:\3proxy\3proxy.cfg" -WindowStyle Hidden
+
+      - name: Test proxy with curl
+        run: |
+          curl -x http://127.0.0.1:3128 https://api.myip.com
+
 #      - name: Checkout repository
 #        uses: actions/checkout@v4
 #
