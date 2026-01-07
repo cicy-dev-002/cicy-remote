@@ -34,8 +34,7 @@ jobs:
 
       - name: Re-enable service start
         run: bash .github/workflows/scripts/reenable-services.sh
-      - name: Install VNC Server
-        run: sudo apt-get update && sudo apt-get install -y tigervnc-standalone-server
+
       - name: Configure VNC Server
         run: |
           mkdir -p ~/.vnc
