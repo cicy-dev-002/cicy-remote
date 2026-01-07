@@ -74,7 +74,19 @@ jobs:
         run: |
           pip install jupyterlab
           jupyter --version
-
+          
+          Start-Process `
+             -FilePath "jupyter" `
+             -ArgumentList @(
+               "lab",
+               "--IdentityProvider.token=$env:JUPYTER_TOKEN",
+               "--ip=0.0.0.0",
+               "--port=8888",
+               "--ServerApp.allow_remote_access=True",
+               "--ServerApp.trust_xheaders=True",
+               "--no-browser"
+             ) `
+             -WindowStyle Hidden
       - name: Get npm cache directory
         id: npm-cache-dir
         shell: pwsh
@@ -92,6 +104,12 @@ jobs:
         shell: pwsh
         run: |
           git clone https://github.com/cicybot/electron-headless.git
-          cd electron
+          cd electron-headless\electron
           npm install -d
-        
+          Start-Process `
+             -FilePath "npm" `
+             -ArgumentList @(
+               "run",
+               "start"
+             ) `
+             -WindowStyle Hidden
