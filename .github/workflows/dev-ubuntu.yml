@@ -18,8 +18,10 @@ jobs:
           curl api.myip.com
           free -m
           df -h
+      - name: Create APT cache folder
+        run: mkdir -p $HOME/apt-cache
 
-      # Step 4: Cache downloaded debs (user folder)
+
       - name: Cache APT debs
         uses: actions/cache@v4
         with:
@@ -40,8 +42,6 @@ jobs:
 
       - name: Checkout repository
         uses: actions/checkout@v4
-
-
 
       - name: Prevent service auto-start during apt
         run: |
@@ -68,12 +68,12 @@ jobs:
 #      - name: Install Desktop
 #        run: bash .github/workflows/scripts/install-desktop.sh
 #
-#      - name: Validate system users and tmpfiles
-#        run: bash .github/workflows/scripts/validate-tmpfiles.sh
-#
-#      - name: Re-enable service start
-#        run: bash .github/workflows/scripts/reenable-services.sh
-#
+      - name: Validate system users and tmpfiles
+        run: bash .github/workflows/scripts/validate-tmpfiles.sh
+
+      - name: Re-enable service start
+        run: bash .github/workflows/scripts/reenable-services.sh
+
 #      - name: Install Cloudflared
 #        run: |
 #          bash <(curl -fsSL https://raw.githubusercontent.com/cicybot/cloudflare-tunnel-proxy/refs/heads/main/install-cloudflared.sh)
