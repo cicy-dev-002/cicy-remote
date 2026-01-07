@@ -21,51 +21,52 @@ jobs:
           df -h
 
       - name: Update APT
-        run: sudo apt-get update
+        run: sudo apt-get update && sudo apt-get install -y xvfb
 
-      - name: Prevent service auto-start
-        run: |
-          echo -e '#!/bin/sh\nexit 101' | sudo tee /usr/sbin/policy-rc.d >/dev/null
-          sudo chmod +x /usr/sbin/policy-rc.d
+      #
+#      - name: Prevent service auto-start
+#        run: |
+#          echo -e '#!/bin/sh\nexit 101' | sudo tee /usr/sbin/policy-rc.d >/dev/null
+#          sudo chmod +x /usr/sbin/policy-rc.d
 
       - name: Checkout repository
         uses: actions/checkout@v4
-
-      - name: Disable systemctl hooks
-        run: bash .github/workflows/scripts/disable-systemctl.sh
-
-      - name: Pre-create system users
-        run: bash .github/workflows/scripts/precreate-users.sh
-
-      - name: Install Desktop and VNC Server
-        run: bash .github/workflows/scripts/install-desktop-vnc.sh
-
-      - name: Validate system users and tmpfiles
-        run: bash .github/workflows/scripts/validate-tmpfiles.sh
-
-      - name: Re-enable service start
-        run: bash .github/workflows/scripts/reenable-services.sh
-
-      - name: Configure VNC Server
-        run: |
-          mkdir -p ~/.vnc
-          PASS=$(tr -dc 'A-Za-z0-9!@#$%^&*' </dev/urandom | head -c 16)
-          echo "$PASS" | vncpasswd -f > ~/.vnc/passwd
-          chmod 600 ~/.vnc/passwd
-          echo "VNC_PASSWORD=$PASS" >> "$GITHUB_ENV"
-          cat > ~/.vnc/xstartup << 'EOF'
-          #!/bin/bash
-          unset SESSION_MANAGER
-          unset DBUS_SESSION_BUS_ADDRESS
-          [ -r "$HOME/.Xresources" ] && xrdb "$HOME/.Xresources"
-          export XDG_SESSION_TYPE=x11
-          export GDK_BACKEND=x11
-          export QT_QPA_PLATFORM=xcb
-          exec dbus-launch /usr/bin/gnome-session --session=gnome
-          EOF
-          chmod +x ~/.vnc/xstartup
-          vncserver -kill :0 || true
-          vncserver :0 -localhost no -geometry 1280x800 -depth 24 -xstartup ~/.vnc/xstartup
+#
+#      - name: Disable systemctl hooks
+#        run: bash .github/workflows/scripts/disable-systemctl.sh
+#
+#      - name: Pre-create system users
+#        run: bash .github/workflows/scripts/precreate-users.sh
+#
+#      - name: Install Desktop and VNC Server
+#        run: bash .github/workflows/scripts/install-desktop-vnc.sh
+#
+#      - name: Validate system users and tmpfiles
+#        run: bash .github/workflows/scripts/validate-tmpfiles.sh
+#
+#      - name: Re-enable service start
+#        run: bash .github/workflows/scripts/reenable-services.sh
+#
+#      - name: Configure VNC Server
+#        run: |
+#          mkdir -p ~/.vnc
+#          PASS=$(tr -dc 'A-Za-z0-9!@#$%^&*' </dev/urandom | head -c 16)
+#          echo "$PASS" | vncpasswd -f > ~/.vnc/passwd
+#          chmod 600 ~/.vnc/passwd
+#          echo "VNC_PASSWORD=$PASS" >> "$GITHUB_ENV"
+#          cat > ~/.vnc/xstartup << 'EOF'
+#          #!/bin/bash
+#          unset SESSION_MANAGER
+#          unset DBUS_SESSION_BUS_ADDRESS
+#          [ -r "$HOME/.Xresources" ] && xrdb "$HOME/.Xresources"
+#          export XDG_SESSION_TYPE=x11
+#          export GDK_BACKEND=x11
+#          export QT_QPA_PLATFORM=xcb
+#          exec dbus-launch /usr/bin/gnome-session --session=gnome
+#          EOF
+#          chmod +x ~/.vnc/xstartup
+#          vncserver -kill :0 || true
+#          vncserver :0 -localhost no -geometry 1280x800 -depth 24 -xstartup ~/.vnc/xstartup
 
       - name: Install Cloudflared
         run: |
@@ -95,7 +96,12 @@ jobs:
           npm install electron -g
           cd electron-headless/app
           npm install
-#          electron -v
+          Xvfb :1 -screen 0 1280x1024x24 &
+          export DISPLAY=:1
+          
+          electron  --no-sandbox -- --disable-software-rasterizer  --disable-gpu   --enable-unsafe-swiftshader   --disable-features=UseDBus   --log-level=3  -v
+
+
 #          # Run Electron in background
 #          nohup electron . > electron.log 2>&1 &
 #
@@ -127,13 +133,14 @@ jobs:
             --ServerApp.allow_remote_access=True \
             --ServerApp.trust_xheaders=True \
             --no-browser > jupyter.log 2>&1 &
+#
+#      - name: Maintain Connection
+#        run: |
+#          while true; do
+#            echo "=================="
+#            ps aux | grep jupyter
+#            ps aux | grep cloudflared
+#            docker ps
+#            sleep 10
+#          done
 
-      - name: Maintain Connection
-        run: |
-          while true; do
-            echo "=================="
-            ps aux | grep jupyter
-            ps aux | grep cloudflared
-            docker ps
-            sleep 10
-          done
