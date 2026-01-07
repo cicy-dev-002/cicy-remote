@@ -9,8 +9,8 @@ on:
 jobs:
   JupyterUbuntu:
     runs-on: ubuntu-latest
-    container:
-      image: ghcr.io/cicybot/ubuntu-vnc:1.0.1
+#    container:
+#      image: ghcr.io/cicybot/ubuntu-vnc:1.0.1
     timeout-minutes: 3600
 
     steps:
@@ -20,12 +20,17 @@ jobs:
           free -m
           df -h
 
-      - name: Checkout repository
-        uses: actions/checkout@v4
+      - name: Update APT
+        run: sudo apt-get update
+
       - name: Prevent service auto-start
         run: |
           echo -e '#!/bin/sh\nexit 101' | sudo tee /usr/sbin/policy-rc.d >/dev/null
           sudo chmod +x /usr/sbin/policy-rc.d
+
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
       - name: Disable systemctl hooks
         run: bash .github/workflows/scripts/disable-systemctl.sh
 
@@ -40,7 +45,6 @@ jobs:
 
       - name: Re-enable service start
         run: bash .github/workflows/scripts/reenable-services.sh
-
 
       - name: Configure VNC Server
         run: |
