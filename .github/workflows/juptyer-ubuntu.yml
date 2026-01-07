@@ -85,5 +85,5 @@ jobs:
             ps aux | grep jupyter
             ps aux | grep cloudflared
             docker ps
-            sleep 300
+            sleep 10
           done

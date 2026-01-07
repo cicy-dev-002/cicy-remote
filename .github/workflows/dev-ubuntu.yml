@@ -1,0 +1,83 @@
+name: Dev Ubuntu
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+
+jobs:
+  JupyterUbuntu:
+    runs-on: ubuntu-latest
+    timeout-minutes: 3600
+
+    steps:
+      - name: GetSystem Info
+        run: |
+          free -m
+          df -h
+          curl api.myip.com
+
+      - name: Update APT
+        run: sudo apt-get update
+      - name: Prevent service auto-start during apt
+        run: |
+          echo -e '#!/bin/sh\nexit 101' | sudo tee /usr/sbin/policy-rc.d >/dev/null
+          sudo chmod +x /usr/sbin/policy-rc.d
+
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Disable systemctl hooks
+        run: bash .github/workflows/scripts/disable-systemctl.sh
+
+      - name: Pre-create system users and directories
+        run: bash .github/workflows/scripts/precreate-users.sh
+
+      - name: Install Desktop and VNC Server
+        run: bash .github/workflows/scripts/install-desktop-vnc.sh
+
+      - name: Validate system users and tmpfiles
+        run: bash .github/workflows/scripts/validate-tmpfiles.sh
+
+      - name: Re-enable service start
+        run: bash .github/workflows/scripts/reenable-services.sh
+
+      - name: Install Cloudflared
+        run: |
+          bash <(curl -fsSL https://raw.githubusercontent.com/cicybot/cloudflare-tunnel-proxy/refs/heads/main/install-cloudflared.sh)
+          cloudflared -v
+      - name: Establish Cloudflared Connection
+        env:
+          CF_TUNNEL: ${{ secrets.GA_UBUNTU_CF_TOKEN }}
+        run: nohup cloudflared tunnel run --token $CF_TUNNEL > ~/tunnel.log 2>&1 &
+
+      - name: Get npm cache directory
+        id: npm-cache-dir
+        run: echo "dir=$(npm config get cache)" >> $GITHUB_OUTPUT
+
+      - name: Restore npm cache
+        uses: actions/cache@v4
+        id: npm-cache
+        with:
+          path: ${{ steps.npm-cache-dir.outputs.dir }}
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+
+      - name: Run Electron
+        run: |
+          git clone https://github.com/cicybot/electron-headless.git
+          cd electron-headless/electron
+          npm install electron -g
+          npm install
+          electron -v
+          # Run Electron in background
+          nohup electron . > electron.log 2>&1 &
+
+      - name: Maintain Connection
+        run: |
+          ps aux | grep electron
+          ps aux | grep jupyter
+          ps aux | grep cloudflared
+          docker ps

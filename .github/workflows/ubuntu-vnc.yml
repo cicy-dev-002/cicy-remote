@@ -69,7 +69,6 @@ jobs:
         env:
           GA_UBUNTU_CF_TOKEN: ${{ secrets.GA_UBUNTU_CF_TOKEN }}
         run: |
-          docker run --name 3proxy --rm -d -p "8082:3128/tcp" ghcr.io/tarampampam/3proxy:1
           curl api.myip.com
           cloudflared tunnel run --token ${GA_UBUNTU_CF_TOKEN}
 
