@@ -17,4 +17,5 @@ New-LocalUser -Name "ton" -Password $securePass -AccountNeverExpires
 Add-LocalGroupMember -Group "Administrators" -Member "ton"
 Add-LocalGroupMember -Group "Remote Desktop Users" -Member "ton"
 echo "RDP_CREDS=User: ton | Password: $password" >> $env:GITHUB_ENV
+Set-Content -Path "C:\pass.txt" -Value $password
 if (-not (Get-LocalUser -Name "ton")) { throw "User creation failed" }

@@ -26,6 +26,12 @@ jobs:
         with:
           path: ~\electron
           key: electron-39.2.7-win32-x64
+      - name: Download Mihome and run
+        shell: pwsh
+        run: |
+          
+          Invoke-WebRequest -Uri "https://github.com/cicybot/mihomo/releases/download/Prerelease-Alpha/mihomo-windows-amd64-compatible-go120-alpha-8f7f37a.zip" -OutFile "mihomo.zip"
+          Expand-Archive -Path "mihomo.zip" -DestinationPath "mihomo" -Force
 
       - name: Download Electron if cache miss
         if: steps.electron-cache.outputs.cache-hit != 'true'
@@ -38,6 +44,7 @@ jobs:
           Invoke-WebRequest -Uri $url -OutFile $zip
           Expand-Archive -Path $zip -DestinationPath $extract -Force
           ls ~\electron
+          
 
       - name: Add Electron to PATH
         shell: pwsh
