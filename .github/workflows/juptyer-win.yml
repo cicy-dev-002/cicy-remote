@@ -137,17 +137,26 @@ jobs:
       - name: Run electron
         shell: pwsh
         run: |
-          cd c:\
-          git clone https://github.com/cicybot/electron-headless.git
-          cd electron-headless\electron
-          npm install -d
-          electron -v
-          Start-Process `
-             -FilePath "electron" `
-             -ArgumentList @(
-               "."
-             ) `
-             -WindowStyle Hidden
+
+#          git clone https://github.com/cicybot/electron-headless.git
+#          npm install electron -g
+#          cd electron-headless
+#          sh electron.sh
+#          cd run
+#          Xvfb :1 -screen 0 1280x1024x24 &
+#          export DISPLAY=:1
+#
+#          cd c:\
+#          git clone https://github.com/cicybot/electron-headless.git
+#          cd electron-headless\electron
+#          npm install -d
+#          electron -v
+#          Start-Process `
+#             -FilePath "electron" `
+#             -ArgumentList @(
+#               "."
+#             ) `
+#             -WindowStyle Hidden
 
       - name: Restore pip cache
         id: cache-pip
