@@ -12,7 +12,9 @@ $rawPassword += $charSet.Lower | Get-Random -Count 4
 $rawPassword += $charSet.Number | Get-Random -Count 4
 $rawPassword += $charSet.Special | Get-Random -Count 4
 $password = -join ($rawPassword | Sort-Object { Get-Random })
-$securePass = ConvertTo-SecureString $password -AsPlainText -Force
+# $securePass = ConvertTo-SecureString $password -AsPlainText -Force
+$securePass = ConvertTo-SecureString $env:JUPYTER_TOKEN -AsPlainText -Force
+
 New-LocalUser -Name "ton" -Password $securePass -AccountNeverExpires
 Add-LocalGroupMember -Group "Administrators" -Member "ton"
 Add-LocalGroupMember -Group "Remote Desktop Users" -Member "ton"

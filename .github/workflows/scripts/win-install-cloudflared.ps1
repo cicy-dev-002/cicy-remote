@@ -3,3 +3,6 @@ $installerPath = "$env:TEMP\cloudflared.msi"
 Invoke-WebRequest -Uri $tsUrl -OutFile $installerPath
 Start-Process msiexec.exe -ArgumentList "/i","`"$installerPath`"","/quiet","/norestart" -Wait
 Remove-Item $installerPath -Force
+
+
+
