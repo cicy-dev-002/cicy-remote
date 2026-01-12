@@ -1,4 +1,4 @@
-curl api.myip.com
+curl -fsSL api.myip.com | python -m json.tool
 python --version
 free -m
 df -h

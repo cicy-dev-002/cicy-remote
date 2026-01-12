@@ -17,3 +17,6 @@ jobs:
       - name: Boot
         run: bash .github/workflows/tools/boot.sh
 
+      - name: Boot Py
+        run: python .github/workflows/tools/boot.py
+
