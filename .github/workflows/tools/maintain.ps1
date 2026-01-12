@@ -1,5 +1,5 @@
- $processNames = @("3proxy","electron", "jupyter", "cloudflared")
-          $ports = @(3128, 8888, 3389)
+$processNames = @("3proxy","electron", "jupyter", "cloudflared")
+$ports = @(3128, 8888, 3389)
 
 while ($true) {
   Write-Host "=======================================`n"
