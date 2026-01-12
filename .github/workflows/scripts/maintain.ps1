@@ -1,4 +1,4 @@
-$processNames = @("3proxy","electron", "jupyter", "cloudflared")
+$processNames = @("3proxy","electron", "cloudflared")
 $ports = @(3128, 8888, 3389)
 
 while ($true) {
