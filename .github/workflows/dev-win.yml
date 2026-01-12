@@ -23,6 +23,6 @@ jobs:
 
       - name: Maintain
         shell: pwsh
-        run: bash .github/workflows/tools/maintain.ps1
+        run: .github/workflows/tools/maintain.ps1
 
 
