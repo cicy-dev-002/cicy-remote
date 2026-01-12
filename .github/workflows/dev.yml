@@ -15,19 +15,26 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Boot
-        run: bash .github/workflows/tools/boot.sh
-
-      - name: Boot Py
-        run: python .github/workflows/tools/boot.py
-
-
-  dev-win:
-    runs-on: windows-latest
-    timeout-minutes: 3600
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+        env:
+          CF_TUNNEL: ${{ secrets.GA_UBUNTU_CF_TOKEN }}
+          JUPYTER_TOKEN: ${{ secrets.JUPYTER_TOKEN }}
+        run: bash .github/workflows/tools/ubuntu.sh
 
       - name: Boot
-        shell: pwsh
-        run: .github/workflows/tools/boot.ps1
+        run: bash .github/workflows/tools/maintain.sh
+
+
+#
+#      - name: Boot Py
+#        run: python .github/workflows/tools/boot.py
+
+
+#  dev-win:
+#    runs-on: windows-latest
+#    timeout-minutes: 3600
+#    steps:
+#      - name: Checkout repository
+#        uses: actions/checkout@v4
+#      - name: Boot
+#        shell: pwsh
+#        run: .github/workflows/tools/boot.ps1
