@@ -1,0 +1,24 @@
+name: Dev Ubuntu
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - dev
+
+jobs:
+  dev-ubuntu:
+    runs-on: ubuntu-latest
+    timeout-minutes: 3600
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Boot
+        env:
+          CF_TUNNEL: ${{ secrets.GA_UBUNTU_CF_TOKEN }}
+          JUPYTER_TOKEN: ${{ secrets.JUPYTER_TOKEN }}
+        run: bash .github/workflows/tools/ubuntu.sh
+
+      - name: Maintain
+        run: bash .github/workflows/tools/maintain.sh

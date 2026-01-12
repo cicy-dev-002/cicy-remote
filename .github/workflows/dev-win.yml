@@ -1,0 +1,28 @@
+name: Dev Windows
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+
+jobs:
+  dev-windows:
+    runs-on: windows-latest
+    timeout-minutes: 3600
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Boot
+        shell: pwsh
+        env:
+          CF_TUNNEL: ${{ secrets.WIN_CF_TUNNEL }}
+          JUPYTER_TOKEN: ${{ secrets.JUPYTER_TOKEN }}
+        run: bash .github/workflows/tools/windows.ps1
+
+      - name: Maintain
+        shell: pwsh
+        run: bash .github/workflows/tools/maintain.ps1
+
+
