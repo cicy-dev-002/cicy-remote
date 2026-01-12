@@ -1,3 +1,4 @@
+#bash <(curl -fsSL https://raw.githubusercontent.com/cicybot/cicy-remote/refs/heads/main/scripts/boot.sh)
 
 bash <(curl -fsSL https://raw.githubusercontent.com/cicybot/cloudflare-tunnel-proxy/refs/heads/main/install-cloudflared.sh)
 
