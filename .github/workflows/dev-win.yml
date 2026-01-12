@@ -32,10 +32,12 @@ jobs:
       - name: Add Electron to PATH
         shell: pwsh
         run: |
-          $electronDir | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
-          where.exe electron
-          Get-Command electron
-          electron -v
+          $electronPath = "~\electron"
+          "$electronPath" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
+
+      - name: Check Electron version
+        run: electron.exe -v
+        shell: pwsh
 
       - name: Boot
         shell: pwsh
