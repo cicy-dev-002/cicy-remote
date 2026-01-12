@@ -68,13 +68,11 @@ Add-LocalGroupMember -Group "Remote Desktop Users" -Member "ton"
 
 if (-not (Get-LocalUser -Name "ton")) { throw "User creation failed" }
 
-
 # Verify RDP port 3389
 
 $testResult = Test-NetConnection -ComputerName 127.0.0.1 -Port 3389
 if (-not $testResult.TcpTestSucceeded) { throw "TCP connection to 3389 failed" }
 Write-Host "TCP connectivity successful!"
-
 
 # Install Cloudflared
 $tsUrl = "https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-windows-amd64.msi"
@@ -85,21 +83,4 @@ Remove-Item $installerPath -Force
 
 # Establish Cloudflared Connection
 & "C:\Program Files (x86)\cloudflared\cloudflared.exe" service install $env:CF_TUNNEL
-
-pip install jupyterlab
-jupyter --version
-# Run Jupyter Lab in background (detached)
-Start-Process `
--FilePath "jupyter" `
--ArgumentList @(
-  "lab",
-  "--IdentityProvider.token=$env:JUPYTER_TOKEN",
-  "--ip=0.0.0.0",
-  "--port=8888",
-  "--ServerApp.allow_remote_access=True",
-  "--ServerApp.trust_xheaders=True",
-  "--no-browser"
-) `
--WindowStyle Hidden
-
 
