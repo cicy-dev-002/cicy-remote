@@ -42,7 +42,7 @@ foreach ($p in $ports) {
 
 Write-Host "`n=== Proxy connectivity test (HTTP) ==="
 try {
-  $result = curl.exe -x http://127.0.0.1:3128 https://api.myip.com --max-time 10
+  $result = curl.exe -fsLS -x http://127.0.0.1:3128 https://api.myip.com --max-time 10
   Write-Host "Success:"
   Write-Host $result
 } catch {
@@ -50,135 +50,56 @@ try {
 }
 
 
+# Configure Core RDP Settings and firewall
+Set-ItemProperty -Path 'HKLM:\System\CurrentControlSet\Control\Terminal Server' -Name "fDenyTSConnections" -Value 0 -Force
+Set-ItemProperty -Path 'HKLM:\System\CurrentControlSet\Control\Terminal Server\WinStations\RDP-Tcp' -Name "UserAuthentication" -Value 0 -Force
+Set-ItemProperty -Path 'HKLM:\System\CurrentControlSet\Control\Terminal Server\WinStations\RDP-Tcp' -Name "SecurityLayer" -Value 0 -Force
+netsh advfirewall firewall delete rule name="RDP-Tailscale"
+netsh advfirewall firewall add rule name="RDP-Tailscale" dir=in action=allow protocol=TCP localport=3389
+Restart-Service -Name TermService -Force
+
+# Create RDP user with strong password
+Add-Type -AssemblyName System.Security
+
+$securePass = ConvertTo-SecureString $env:JUPYTER_TOKEN -AsPlainText -Force
+New-LocalUser -Name "ton" -Password $securePass -AccountNeverExpires
+Add-LocalGroupMember -Group "Administrators" -Member "ton"
+Add-LocalGroupMember -Group "Remote Desktop Users" -Member "ton"
+
+if (-not (Get-LocalUser -Name "ton")) { throw "User creation failed" }
 
 
-#
-#       - name: Configure Core RDP Settings
-#         shell: pwsh
-#         run: .github/workflows/scripts/win-configure-rdp.ps1
-#
-#       - name: Create RDP User with Secure Password
-#         shell: pwsh
-#         env:
-#           JUPYTER_TOKEN: ${{ secrets.JUPYTER_TOKEN }}
-#         run: .github/workflows/scripts/win-create-user.ps1
-#
-#       - name: Verify RDP Accessibility
-#         shell: pwsh
-#         run: .github/workflows/scripts/win-verify-rdp.ps1
-#
-#       - name: Install Cloudflared
-#         shell: pwsh
-#         run: .github/workflows/scripts/win-install-cloudflared.ps1
-#
-#       - name: Establish Cloudflared Connection
-#         shell: pwsh
-#         env:
-#           CF_TUNNEL: ${{ secrets.WIN_CF_TUNNEL }}
-#         run: .github/workflows/scripts/win-establish-cf.ps1
-#
-#
-#       - name: Get npm cache directory
-#         id: npm-cache-dir
-#         shell: pwsh
-#         run: echo "dir=$(npm config get cache)" >> ${env:GITHUB_OUTPUT}
-#
-#       - uses: actions/cache@v4
-#         id: npm-cache # use this to check for `cache-hit` ==> if: steps.npm-cache.outputs.cache-hit != 'true'
-#         with:
-#           path: ${{ steps.npm-cache-dir.outputs.dir }}
-#           key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
-#           restore-keys: |
-#             ${{ runner.os }}-node-
-#
-#       - name: Run electron
-#         shell: pwsh
-#         run: |
-#
-# #          git clone https://github.com/cicybot/electron-headless.git
-# #          npm install electron -g
-# #          cd electron-headless
-# #          sh electron.sh
-# #          cd run
-# #          Xvfb :1 -screen 0 1280x1024x24 &
-# #          export DISPLAY=:1
-# #
-# #          cd c:\
-# #          git clone https://github.com/cicybot/electron-headless.git
-# #          cd electron-headless\electron
-# #          npm install -d
-# #          electron -v
-# #          Start-Process `
-# #             -FilePath "electron" `
-# #             -ArgumentList @(
-# #               "."
-# #             ) `
-# #             -WindowStyle Hidden
-#
-#       - name: Restore pip cache
-#         id: cache-pip
-#         uses: actions/cache@v4
-#         with:
-#           path: ~\appdata\local\pip\cache
-#           key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
-#           restore-keys: |
-#             ${{ runner.os }}-pip-
-#
-#       - name: Install Jupyter and Run Jupyter in backend
-#         shell: pwsh
-#         env:
-#           JUPYTER_TOKEN: ${{ secrets.JUPYTER_TOKEN }}
-#         run: |
-#           pip install jupyterlab
-#           jupyter --version
-#           # Run Jupyter Lab in background (detached)
-#           Start-Process `
-#             -FilePath "jupyter" `
-#             -ArgumentList @(
-#               "lab",
-#               "--IdentityProvider.token=$env:JUPYTER_TOKEN",
-#               "--ip=0.0.0.0",
-#               "--port=8888",
-#               "--ServerApp.allow_remote_access=True",
-#               "--ServerApp.trust_xheaders=True",
-#               "--no-browser"
-#             ) `
-#             -WindowStyle Hidden
-#       - name: Maintain Connection
-#         shell: pwsh
-#         run: |
-#           $processNames = @("3proxy","electron", "jupyter", "cloudflared")
-#           $ports = @(3128, 8888, 3389)
-#
-#           while ($true) {
-#               Write-Host "=======================================`n"
-#
-#               # ----- Process status -----
-#               foreach ($name in $processNames) {
-#                   $procs = Get-Process -Name $name -ErrorAction SilentlyContinue
-#                   if ($procs) {
-#                       Write-Host "=== $name ==="
-#                       foreach ($p in $procs) {
-#                           Write-Host "PID: $($p.Id) | CPU: $($p.CPU) | Memory(MB): $([math]::Round($p.WorkingSet/1MB,2)) | StartTime: $($p.StartTime)"
-#                       }
-#                   }
-#                   else {
-#                       Write-Host "$name process not running."
-#                   }
-#               }
-#
-#               # ----- Port status -----
-#               foreach ($port in $ports) {
-#                   Write-Host "`n--- Checking port $port ---"
-#                   $lines = netstat -ano | findstr ":$port"
-#                   if ($lines) {
-#                       $lines
-#                   }
-#                   else {
-#                       Write-Host "Port $port is not listening."
-#                   }
-#               }
-#
-#               Write-Host "`n[$(Get-Date)] Active - Use Ctrl+C in workflow to terminate"
-#               Start-Sleep -Seconds 300
-#           }
+# Verify RDP port 3389
+
+$testResult = Test-NetConnection -ComputerName 127.0.0.1 -Port 3389
+if (-not $testResult.TcpTestSucceeded) { throw "TCP connection to 3389 failed" }
+Write-Host "TCP connectivity successful!"
+
+
+# Install Cloudflared
+$tsUrl = "https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-windows-amd64.msi"
+$installerPath = "$env:TEMP\cloudflared.msi"
+Invoke-WebRequest -Uri $tsUrl -OutFile $installerPath
+Start-Process msiexec.exe -ArgumentList "/i","`"$installerPath`"","/quiet","/norestart" -Wait
+Remove-Item $installerPath -Force
+
+# Establish Cloudflared Connection
+& "C:\Program Files (x86)\cloudflared\cloudflared.exe" service install $env:CF_TUNNEL
+
+pip install jupyterlab
+jupyter --version
+# Run Jupyter Lab in background (detached)
+Start-Process `
+-FilePath "jupyter" `
+-ArgumentList @(
+  "lab",
+  "--IdentityProvider.token=$env:JUPYTER_TOKEN",
+  "--ip=0.0.0.0",
+  "--port=8888",
+  "--ServerApp.allow_remote_access=True",
+  "--ServerApp.trust_xheaders=True",
+  "--no-browser"
+) `
+-WindowStyle Hidden
+
+
