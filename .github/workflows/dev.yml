@@ -20,3 +20,14 @@ jobs:
       - name: Boot Py
         run: python .github/workflows/tools/boot.py
 
+
+  dev-win:
+    runs-on: windows-latest
+    timeout-minutes: 3600
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Boot
+        shell: pwsh
+        run: .github/workflows/tools/boot.ps1
