@@ -1,0 +1,193 @@
+name: Dev Windows
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - dev
+
+jobs:
+  dev-windows:
+    runs-on: windows-latest
+    timeout-minutes: 3600
+
+    steps:
+      - name: Get System Info
+        run: |
+          curl api.myip.com
+          docker ps
+
+      - name: Restore Electron cache
+        id: electron-cache
+        uses: actions/cache@v4
+        with:
+          path: ~\electron
+          key: electron-39.2.7-win32-x64
+
+      - name: Download Electron if cache miss
+        if: steps.electron-cache.outputs.cache-hit != 'true'
+        shell: pwsh
+        run: |
+          $url = "https://github.com/electron/electron/releases/download/v39.2.7/electron-v39.2.7-win32-x64.zip"
+          $zip = "~\electron.zip"
+          $extract = "~\electron"
+
+          Invoke-WebRequest -Uri $url -OutFile $zip
+          Expand-Archive -Path $zip -DestinationPath $extract -Force
+          ls ~\electron
+
+      - name: Add Electron to PATH
+        shell: pwsh
+        run: |
+          $electronPath = "~\electron"
+          "$electronPath" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
+
+      - name: Check Electron version
+        run: electron.exe -v
+        shell: pwsh
+
+      - name: Setup and test 3Proxy
+        shell: pwsh
+        run: |
+          # Download config
+          Invoke-WebRequest -Uri "https://raw.githubusercontent.com/cicybot/personal/refs/heads/main/assets/3proxy_v1.cfg" -OutFile "$env:USERPROFILE\3proxy.cfg"
+          
+          # Download 3proxy
+          Invoke-WebRequest -Uri "https://github.com/3proxy/3proxy/releases/download/0.9.5/3proxy-0.9.5-x64.zip" -OutFile "$env:USERPROFILE\3proxy.zip"
+          
+          # Extract
+          Expand-Archive -Path "$env:USERPROFILE\3proxy.zip" -DestinationPath "$env:USERPROFILE\3proxy" -Force
+          
+          # Start 3proxy (detached)
+          Start-Process -FilePath "$env:USERPROFILE\3proxy\bin64\3proxy.exe" -ArgumentList "$env:USERPROFILE\3proxy.cfg" -WindowStyle Hidden
+          
+          Write-Host "Waiting for 3proxy to start..."
+          Start-Sleep -Seconds 3
+          
+          ### -------- HEALTH CHECKS -------- ###
+          
+          Write-Host "`n=== Checking process ==="
+          $proc = Get-Process -Name 3proxy -ErrorAction SilentlyContinue
+          if (-not $proc) {
+              Write-Error "3proxy process NOT running"
+              exit 1
+          }
+          Write-Host "3proxy running with PID $($proc.Id)"
+          
+          Write-Host "`n=== Checking listening ports ==="
+          $ports = @(3128,1080)
+          foreach ($p in $ports) {
+              $net = netstat -ano | findstr ":$p"
+              if ($net) {
+                  Write-Host "Port $p is LISTENING"
+                  $net
+              } else {
+                  Write-Warning "Port $p not open"
+              }
+          }
+          
+          Write-Host "`n=== Proxy connectivity test (HTTP) ==="
+          try {
+              $result = curl.exe -x http://127.0.0.1:3128 https://api.myip.com --max-time 10
+              Write-Host "Success:"
+              Write-Host $result
+          } catch {
+              Write-Warning "Curl proxy test failed"
+          }
+
+#      - name: Checkout repository
+#        uses: actions/checkout@v4
+#
+#      - name: Restore cache
+#        id: cache
+#        uses: actions/cache@v4
+#        with:
+#          path: |
+#            ~\cicy
+#          key: test-cache-windows-v1
+#
+#      - name: Show cache status
+#        shell: pwsh
+#        run: |
+#          if ("${{ steps.cache.outputs.cache-hit }}" -eq "true") {
+#            Write-Host "Cache HIT"
+#          } else {
+#            Write-Host "Cache MISS"
+#          }
+#
+#      - name: Create folder and file when cache missing
+#        if: steps.cache.outputs.cache-hit != 'true'
+#        shell: pwsh
+#        run: |
+#          New-Item -ItemType Directory -Force ~\cicy
+#          "Test cache" | Out-File ~\cicy\test.txt
+#          Write-Host "Created test cache file"
+#
+#      - name: List contents of cache folder
+#        shell: pwsh
+#        run: |
+#          Write-Host "Listing ~\cicy"
+#          if (Test-Path ~\cicy) {
+#            Get-ChildItem ~\cicy -Recurse
+#          } else {
+#            Write-Host "Directory does not exist"
+#          }
+#      - name: Show pip cache dir
+#        shell: pwsh
+#        run: python -m pip cache dir
+#
+#      - name: Restore pip cache
+#        id: cache-pip
+#        uses: actions/cache@v4
+#        with:
+#          path: ~\appdata\local\pip\cache
+#          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
+#          restore-keys: |
+#            ${{ runner.os }}-pip-
+#
+#      - name: Run Jupyter
+#        shell: pwsh
+#        run: |
+#          pip install jupyterlab
+#          jupyter --version
+#
+#          Start-Process `
+#             -FilePath "jupyter" `
+#             -ArgumentList @(
+#               "lab",
+#               "--IdentityProvider.token=$env:JUPYTER_TOKEN",
+#               "--ip=0.0.0.0",
+#               "--port=8888",
+#               "--ServerApp.allow_remote_access=True",
+#               "--ServerApp.trust_xheaders=True",
+#               "--no-browser"
+#             ) `
+#             -WindowStyle Hidden
+#      - name: Get npm cache directory
+#        id: npm-cache-dir
+#        shell: pwsh
+#        run: echo "dir=$(npm config get cache)" >> ${env:GITHUB_OUTPUT}
+#
+#      - uses: actions/cache@v4
+#        id: npm-cache # use this to check for `cache-hit` ==> if: steps.npm-cache.outputs.cache-hit != 'true'
+#        with:
+#          path: ${{ steps.npm-cache-dir.outputs.dir }}
+#          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+#          restore-keys: |
+#            ${{ runner.os }}-node-
+#
+#      - name: Run electron
+#        shell: pwsh
+#        run: |
+#          git clone https://github.com/cicybot/electron-headless.git
+#          cd electron-headless\electron
+#          npm install electron -g
+#          npm install -d
+#
+#          Start-Process `
+#             -FilePath "npm" `
+#             -ArgumentList @(
+#               "run",
+#               "start"
+#             ) `
+#             -WindowStyle Hidden

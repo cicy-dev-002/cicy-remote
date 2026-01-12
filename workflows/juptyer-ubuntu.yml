@@ -1,0 +1,102 @@
+name: Jupyter Ubuntu
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - JupyterUbuntu
+
+jobs:
+  JupyterUbuntu:
+    runs-on: ubuntu-latest
+#    container:
+#      image: ghcr.io/cicybot/ubuntu-vnc:1.0.1
+    timeout-minutes: 3600
+
+    steps:
+      - name: Get System Info
+        run: |
+          curl api.myip.com
+          free -m
+          df -h
+
+      - name: Update APT
+        run: sudo apt-get update && sudo apt-get install -y xvfb  xkb-data
+
+      - name: Checkout repository
+        uses: actions/checkout@v4
+#
+      - name: Install Cloudflared
+        run: |
+          bash <(curl -fsSL https://raw.githubusercontent.com/cicybot/cloudflare-tunnel-proxy/refs/heads/main/install-cloudflared.sh)
+          cloudflared -v
+      - name: Establish Cloudflared Connection
+        env:
+          CF_TUNNEL: ${{ secrets.GA_UBUNTU_CF_TOKEN }}
+        run: nohup cloudflared tunnel run --token $CF_TUNNEL > ~/tunnel.log 2>&1 &
+
+      - name: Get npm cache directory
+        id: npm-cache-dir
+        run: echo "dir=$(npm config get cache)" >> $GITHUB_OUTPUT
+
+      - name: Restore npm cache
+        uses: actions/cache@v4
+        id: npm-cache
+        with:
+          path: ${{ steps.npm-cache-dir.outputs.dir }}
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+
+      - name: Run Electron
+        run: |
+          git clone https://github.com/cicybot/electron-headless.git
+          npm install electron -g
+          cd electron-headless
+          sh electron.sh
+          cd run 
+          Xvfb :1 -screen 0 1280x1024x24 &
+          export DISPLAY=:1
+          nohup electron  --no-sandbox --disable-software-rasterizer  --disable-gpu   --enable-unsafe-swiftshader   --disable-features=UseDBus   --log-level=3  main.js > ~/electron.log 2>&1 &
+          sleep 2
+          cat ~/electron.log
+
+      - name: Docker 3proxy Proxy
+        run: |
+          docker run --name 3proxy --rm -d -p "8082:3128/tcp" ghcr.io/tarampampam/3proxy:1
+      - name: Restore pip cache
+        id: cache-pip
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
+
+      - name: Install Jupyter and Run Jupyter in background
+        env:
+          JUPYTER_TOKEN: ${{ secrets.JUPYTER_TOKEN }}
+        run: |
+          pip install --upgrade pip
+          pip install jupyterlab
+          jupyter --version
+          # Run Jupyter Lab in background
+          nohup jupyter lab \
+            --ServerApp.token=$JUPYTER_TOKEN \
+            --ip=0.0.0.0 \
+            --port=8888 \
+            --ServerApp.allow_remote_access=True \
+            --ServerApp.trust_xheaders=True \
+            --no-browser > jupyter.log 2>&1 &
+      - name: Maintain Connection
+        run: |
+          while true; do
+            echo "======================================================"
+            ps aux | grep electron
+            ps aux | grep jupyter
+            ps aux | grep cloudflared
+            docker ps
+            netstat -tnlp
+            sleep 10
+          done
+

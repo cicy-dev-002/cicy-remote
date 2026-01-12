@@ -1,0 +1,23 @@
+name: Dev Ubuntu
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+
+jobs:
+  dev-ubuntu:
+    runs-on: ubuntu-latest
+    container:
+      image: ghcr.io/cicybot/ubuntu-vnc:1.0.1
+    timeout-minutes: 3600
+
+    steps:
+      # Step 1: Checkout repo
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Disable systemctl hooks
+        run: bash .github/workflows/tools/boot.sh
+

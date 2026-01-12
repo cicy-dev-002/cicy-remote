@@ -1,0 +1,86 @@
+name: Dev Ubuntu
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - dev
+
+jobs:
+  dev-ubuntu:
+    runs-on: ubuntu-latest
+    container:
+      image: ghcr.io/cicybot/ubuntu-vnc:1.0.1
+    timeout-minutes: 3600
+
+    steps:
+      # Step 1: Checkout repo
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # Step 2: System info
+      - name: Get System Info
+        run: |
+          curl api.myip.com
+          free -m
+          df -h
+      # Step 7: Prevent service auto-start during apt
+      - name: Prevent service auto-start
+        run: |
+          echo -e '#!/bin/sh\nexit 101' | sudo tee /usr/sbin/policy-rc.d >/dev/null
+          sudo chmod +x /usr/sbin/policy-rc.d
+
+      # Step 8: Disable systemctl hooks
+      - name: Disable systemctl hooks
+        run: bash .github/workflows/scripts/disable-systemctl.sh
+
+      # Step 9: Pre-create system users
+      - name: Pre-create system users
+        run: bash .github/workflows/scripts/precreate-users.sh
+
+
+      # Step 14: Validate users and tmpfiles
+      - name: Validate system users and tmpfiles
+        run: bash .github/workflows/scripts/validate-tmpfiles.sh
+
+      # Step 15: Re-enable service start
+      - name: Re-enable service start
+        run: bash .github/workflows/scripts/reenable-services.sh
+#      - name: Install Cloudflared
+#        run: |
+#          bash <(curl -fsSL https://raw.githubusercontent.com/cicybot/cloudflare-tunnel-proxy/refs/heads/main/install-cloudflared.sh)
+#          cloudflared -v
+#      - name: Establish Cloudflared Connection
+#        env:
+#          CF_TUNNEL: ${{ secrets.GA_UBUNTU_CF_TOKEN }}
+#        run: nohup cloudflared tunnel run --token $CF_TUNNEL > ~/tunnel.log 2>&1 &
+#
+#      - name: Get npm cache directory
+#        id: npm-cache-dir
+#        run: echo "dir=$(npm config get cache)" >> $GITHUB_OUTPUT
+#
+#      - name: Restore npm cache
+#        uses: actions/cache@v4
+#        id: npm-cache
+#        with:
+#          path: ${{ steps.npm-cache-dir.outputs.dir }}
+#          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+#          restore-keys: |
+#            ${{ runner.os }}-node-
+
+#      - name: Run Electron
+#        run: |
+#          git clone https://github.com/cicybot/electron-headless.git
+#          cd electron-headless/electron
+#          npm install electron -g
+#          npm install
+#          electron -v
+          # Run Electron in background
+#          nohup electron . > electron.log 2>&1 &
+
+#      - name: Maintain Connection
+#        run: |
+#          ps aux | grep electron
+#          ps aux | grep jupyter
+#          ps aux | grep cloudflared
+#          docker ps
