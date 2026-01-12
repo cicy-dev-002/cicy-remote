@@ -19,10 +19,10 @@ jobs:
         env:
           CF_TUNNEL: ${{ secrets.WIN_CF_TUNNEL }}
           JUPYTER_TOKEN: ${{ secrets.JUPYTER_TOKEN }}
-        run: .github/workflows/tools/windows.ps1
+        run: .github/workflows/scripts/windows.ps1
 
       - name: Maintain
         shell: pwsh
-        run: .github/workflows/tools/maintain.ps1
+        run: .github/workflows/scripts/maintain.ps1
 
 

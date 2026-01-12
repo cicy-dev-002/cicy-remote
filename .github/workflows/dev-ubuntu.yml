@@ -18,7 +18,7 @@ jobs:
         env:
           CF_TUNNEL: ${{ secrets.GA_UBUNTU_CF_TOKEN }}
           JUPYTER_TOKEN: ${{ secrets.JUPYTER_TOKEN }}
-        run: bash .github/workflows/tools/ubuntu.sh
+        run: bash .github/workflows/scripts/ubuntu.sh
 
       - name: Maintain
-        run: bash .github/workflows/tools/maintain.sh
+        run: bash .github/workflows/scripts/maintain.sh
