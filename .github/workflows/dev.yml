@@ -1,4 +1,4 @@
-name: Dev Ubuntu
+name: Dev
 
 on:
   workflow_dispatch:
@@ -11,7 +11,6 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 3600
     steps:
-      # Step 1: Checkout repo
       - name: Checkout repository
         uses: actions/checkout@v4
 
