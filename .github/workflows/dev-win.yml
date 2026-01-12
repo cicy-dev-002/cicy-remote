@@ -14,6 +14,21 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      - name: Restore Electron cache
+        id: electron-cache
+        uses: actions/cache@v4
+        with:
+          path: ~\electron
+          key: electron-39.2.7-win32-x64
+
+      - name: Download Electron if cache miss
+        if: steps.electron-cache.outputs.cache-hit != 'true'
+        shell: pwsh
+        run: |
+          Invoke-WebRequest -Uri "https://github.com/electron/electron/releases/download/v39.2.7/electron-v39.2.7-win32-x64.zip" -OutFile "~\electron.zip"
+          Expand-Archive -Path  "~\electron.zip" -DestinationPath ~\electron -Force
+          ls ~\electron
+
       - name: Boot
         shell: pwsh
         env:
