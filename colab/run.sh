@@ -6,5 +6,5 @@ else
     cd /content/cloudflare-python-workers
     git pull origin main
 fi
-cd cd /content/cloudflare-python-workers/workers
-ls -alh
+cd /content/cloudflare-python-workers/workers
+uv sync
