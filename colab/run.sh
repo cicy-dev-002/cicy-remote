@@ -2,12 +2,13 @@ rm -rf /content/cloudflare-python-workers
 if [ ! -d "/content/cloudflare-python-workers" ]; then
     echo "Cloning cloudflare-python-workers..."
     git clone https://github.com/cicybot/cloudflare-python-workers.git /content/cloudflare-python-workers
+    cd /content/cloudflare-python-workers
 else
     cd /content/cloudflare-python-workers
     git pull origin main
+    ls -alh
 fi
-ls -alh
-cd /content/cloudflare-python-workers/workers
+cd workers
 export API_URL=https://mac-8989.cicy.de5.net
 uv sync
 pkill worker.py
