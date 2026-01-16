@@ -6,6 +6,7 @@ else
     cd /content/cloudflare-python-workers
     git pull origin main
 fi
+ls -alh
 cd /content/cloudflare-python-workers/workers
 export API_URL=https://mac-8989.cicy.de5.net
 uv sync
