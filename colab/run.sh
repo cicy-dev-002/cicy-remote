@@ -9,6 +9,7 @@ fi
 cd /content/cloudflare-python-workers/workers
 export API_URL=https://mac-8989.cicy.de5.net/
 uv sync
+pkill worker.py
 nohup uv run worker.py colab_1001  > /content/workers.log 2>&1 &
 sleep 1
 cat /content/workers.log
