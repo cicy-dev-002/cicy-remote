@@ -1,3 +1,4 @@
+rm -rf /content/cloudflare-python-workers
 if [ ! -d "/content/cloudflare-python-workers" ]; then
     echo "Cloning cloudflare-python-workers..."
     git clone https://github.com/cicybot/cloudflare-python-workers.git /content/cloudflare-python-workers
