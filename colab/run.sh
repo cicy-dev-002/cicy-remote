@@ -12,7 +12,18 @@ cd workers
 export API_URL=https://mac-8989.cicy.de5.net
 #
 uv sync
-pkill worker.py
-nohup uv run worker.py colab_1001  > /content/workers.log 2>&1 &
-sleep 2
+
+WORKER_NAME="worker.py"
+WORKER_ARG="colab_1001"
+
+PID=$(ps aux | grep "$WORKER_NAME" | grep "$WORKER_ARG" | grep -v grep | awk '{print $2}')
+
+if [ -z "$PID" ]; then
+    echo "worker.py not running, starting it..."
+    nohup uv run worker.py colab_1001 > /content/workers.log 2>&1 &
+    sleep 2
+else
+    echo "worker.py already running, PID=$PID"
+fi
+
 cat /content/workers.log
