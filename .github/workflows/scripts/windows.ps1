@@ -84,6 +84,7 @@ Remove-Item $installerPath -Force
 # Establish Cloudflared Connection
 & "C:\Program Files (x86)\cloudflared\cloudflared.exe" service install $env:CF_TUNNEL
 
+#Jupyter
 pip install jupyterlab
 jupyter --version
 # Run Jupyter Lab in background (detached)
