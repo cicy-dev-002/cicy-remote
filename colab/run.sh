@@ -8,7 +8,7 @@ else
     git pull origin main
 fi
 cd workers
-export API_URL=https://mac-8989.cicy.de5.net
+export API_URL=https://mac-8988.cicy.de5.net
 #
 uv sync
 
