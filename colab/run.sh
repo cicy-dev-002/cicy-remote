@@ -6,7 +6,6 @@ if [ ! -d "/content/cloudflare-python-workers" ]; then
 else
     cd /content/cloudflare-python-workers
     git pull origin main
-    ls -alh
 fi
 cd workers
 export API_URL=https://mac-8989.cicy.de5.net
