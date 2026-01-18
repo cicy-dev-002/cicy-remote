@@ -1,1 +1,3 @@
-git clone --branch mcp https://github.com/cicybot/electron-headless.git
+git clone --branch mcp https://github.com/cicybot/electron-headless.git c:\electron-mcp
+
+cd C:\electron-mcp\
