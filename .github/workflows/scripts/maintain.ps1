@@ -32,4 +32,5 @@ while ($true) {
 
   Write-Host "`n[$(Get-Date)] Active - Use Ctrl+C in workflow to terminate"
   Start-Sleep -Seconds 300
+  break
 }
