@@ -107,7 +107,7 @@ Write-Host "Establishing Cloudflared connection..."
 & "C:\Program Files (x86)\cloudflared\cloudflared.exe" service install $env:CF_TUNNEL
 Write-Host "Cloudflared service installed."
 
-pip install pyautogui
+pip install pyautogui pyperclip
 
 Write-Host "Installing JupyterLab..."
 pip install jupyterlab
@@ -148,13 +148,14 @@ Write-Host "Repository cloned."
 
 Write-Host "Installing dependencies..."
 cd d:\electron-mcp\app
+npm install -g electron
 npm install
 Write-Host "Dependencies installed."
-
 
 Write-Host "Cloning cicy-remote repository..."
 git clone --branch main --single-branch https://$env:GH_CICYBOT_TOKEN@github.com/cicybot/cicy-remote.git d:\cicy-remote
 Write-Host "Repository cloned."
+
 
 cd d:\cicy-remote\py-autogui
 pip install -r requirements.txt
