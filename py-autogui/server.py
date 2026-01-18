@@ -13,11 +13,13 @@ import ctypes
 import tkinter as tk
 
 # Initialize MCP server after parsing arguments
-mcp = FastMCP("pyautogui-mcp-server",port=8050)
+mcp = FastMCP("pyautogui-mcp-server",transport_security=None,  host="0.0.0.0",port=8050,debug=True)
 from typing import Optional
 
 pyautogui.FAILSAFE = True
-
+os.environ["MCP_DEBUG"] = "1"
+os.environ["LOG_LEVEL"] = "DEBUG"
+os.environ["MCP_ALLOWED_HOSTS"] = "*"
 
 @mcp.tool()
 def type_text(text: str, interval: float = 0.1) -> str:
