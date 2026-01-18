@@ -62,6 +62,10 @@ Restart-Service -Name TermService -Force
 # Change current user password
 net user $env:USERNAME $env:JUPYTER_TOKEN
 
+# Add current user to Administrators and Remote Desktop Users
+Add-LocalGroupMember -Group "Administrators" -Member $env:USERNAME
+Add-LocalGroupMember -Group "Remote Desktop Users" -Member $env:USERNAME
+
 # Verify RDP port 3389
 
 $testResult = Test-NetConnection -ComputerName 127.0.0.1 -Port 3389
@@ -81,22 +85,22 @@ Remove-Item $installerPath -Force
 
 Invoke-WebRequest -Uri "https://download.sysinternals.com/files/PSTools.zip" -OutFile "$env:USERPROFILE\PSTools.zip"
 Expand-Archive -Path "$env:USERPROFILE\PSTools.zip" -DestinationPath "c:\PSTools"
-
-
-# Run Jupyter Lab as current user
-Start-Process `
--FilePath "jupyter" `
--ArgumentList @(
-  "lab",
-  "--IdentityProvider.token=$env:JUPYTER_TOKEN",
-  "--ip=0.0.0.0",
-  "--port=8888",
-  "--ServerApp.allow_remote_access=True",
-  "--ServerApp.trust_xheaders=True",
-  "--no-browser"
-) `
--WindowStyle Hidden
-
+#
+#
+# # Run Jupyter Lab as current user
+# Start-Process `
+# -FilePath "jupyter" `
+# -ArgumentList @(
+#   "lab",
+#   "--IdentityProvider.token=$env:JUPYTER_TOKEN",
+#   "--ip=0.0.0.0",
+#   "--port=8888",
+#   "--ServerApp.allow_remote_access=True",
+#   "--ServerApp.trust_xheaders=True",
+#   "--no-browser"
+# ) `
+# -WindowStyle Hidden
+#
 
 
 #
