@@ -108,15 +108,15 @@ Write-Host "Establishing Cloudflared connection..."
 Write-Host "Cloudflared service installed."
 
 pip install pyautogui
-#
-# Write-Host "Installing JupyterLab..."
-# pip install jupyterlab
-# Write-Host "JupyterLab installed."
-#
-# Write-Host "Checking Jupyter version..."
-# jupyter --version
-# Write-Host "Jupyter version checked."
-#
+
+Write-Host "Installing JupyterLab..."
+pip install jupyterlab
+Write-Host "JupyterLab installed."
+
+Write-Host "Checking Jupyter version..."
+jupyter --version
+Write-Host "Jupyter version checked."
+
 # Write-Host "Starting Jupyter Lab..."
 # Start-Process `
 # -FilePath "jupyter" `
@@ -140,9 +140,9 @@ Write-Host "Checking opencode version..."
 opencode -v
 Write-Host "opencode version checked."
 #
-# Write-Host "Cloning electron-headless repository..."
-# git clone --branch mcp --single-branch https://github.com/cicybot/electron-headless.git d:\electron-mcp
-# Write-Host "Repository cloned."
+Write-Host "Cloning electron-headless repository..."
+git clone --branch mcp --single-branch https://github.com/cicybot/electron-headless.git d:\electron-mcp
+Write-Host "Repository cloned."
 #
 # Write-Host "Installing dependencies..."
 # cd d:\electron-mcp\app

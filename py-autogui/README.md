@@ -1,6 +1,13 @@
-# General MCP Server
+# PyAutoGUI MCP Server
 
-A basic Model Context Protocol server implemented in Python.
+An MCP (Model Context Protocol) server that provides GUI automation capabilities using PyAutoGUI.
+
+## Features
+
+- **Text Input**: Type text using keyboard
+- **Mouse Control**: Click, move, and scroll
+- **Screenshot**: Capture screen as image or base64
+- **Keyboard Shortcuts**: Press single keys or hotkey combinations
 
 ## Installation
 
@@ -16,11 +23,35 @@ Run the server:
 python server.py
 ```
 
-## Tools
+## Available Tools
 
-- `add(a: int, b: int)`: Adds two numbers
-- `multiply(x: int, y: int)`: Multiplies two numbers
-- `subtract(a: int, b: int)`: Subtracts b from a
-- `divide(a: float, b: float)`: Divides a by b
-- `get_current_time()`: Returns current date and time in ISO format
-- `reverse_string(text: str)`: Reverses the input string
+| Tool | Description |
+|------|-------------|
+| `type_text(text, interval)` | Type text with optional delay between keystrokes |
+| `click(x, y, clicks, button)` | Click at coordinates or current position |
+| `screenshot(save_path)` | Take screenshot and save to file or return as base64 |
+| `get_mouse_position()` | Get current mouse coordinates |
+| `key_press(keys)` | Press keyboard keys (e.g., 'enter', 'ctrl+c') |
+| `hotkey_press(*keys)` | Press multiple keys simultaneously |
+| `move_mouse(x, y, duration)` | Move mouse to coordinates with animation |
+| `scroll(clicks)` | Scroll mouse wheel |
+
+## Safety
+
+The server includes a fail-safe mechanism that interrupts the script if the mouse is moved to the upper-left corner of the screen.
+
+## Example Usage
+
+```python
+# Type text
+type_text("Hello World")
+
+# Click at coordinates
+click(x=500, y=300)
+
+# Take screenshot
+screenshot(save_path="screenshot.png")
+
+# Get mouse position
+get_mouse_position()
+```
