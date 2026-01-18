@@ -89,6 +89,7 @@ Invoke-WebRequest -Uri "https://download.sysinternals.com/files/PSTools.zip" -Ou
 Expand-Archive -Path "$env:USERPROFILE\PSTools.zip" -DestinationPath "c:\PSTools"
 
 pwd
+
 #
 # #Jupyter
 # pip install jupyterlab
