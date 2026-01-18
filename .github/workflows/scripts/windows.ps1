@@ -1,4 +1,5 @@
-#Step 2: System info
+Write-Host "Current username: $env:USERNAME"
+
 curl -fsSL api.myip.com | python -m json.tool
 python --version
 
@@ -58,15 +59,8 @@ netsh advfirewall firewall delete rule name="RDP-Tailscale"
 netsh advfirewall firewall add rule name="RDP-Tailscale" dir=in action=allow protocol=TCP localport=3389
 Restart-Service -Name TermService -Force
 
-# Create RDP user with strong password
-Add-Type -AssemblyName System.Security
-
-$securePass = ConvertTo-SecureString $env:JUPYTER_TOKEN -AsPlainText -Force
-New-LocalUser -Name "ton" -Password $securePass -AccountNeverExpires
-Add-LocalGroupMember -Group "Administrators" -Member "ton"
-Add-LocalGroupMember -Group "Remote Desktop Users" -Member "ton"
-
-if (-not (Get-LocalUser -Name "ton")) { throw "User creation failed" }
+# Change current user password
+net user $env:USERNAME $env:JUPYTER_TOKEN
 
 # Verify RDP port 3389
 
@@ -89,11 +83,19 @@ Invoke-WebRequest -Uri "https://download.sysinternals.com/files/PSTools.zip" -Ou
 Expand-Archive -Path "$env:USERPROFILE\PSTools.zip" -DestinationPath "c:\PSTools"
 
 
-# $runAsCommand = "jupyter lab --IdentityProvider.token=$env:JUPYTER_TOKEN --ip=0.0.0.0 --port=8888 --ServerApp.allow_remote_access=True --ServerApp.trust_xheaders=True --no-browser"
-
-$runAsCommand = "powershell.exe -ExecutionPolicy Bypass -File D:\a\cicy-remote\cicy-remote\windows\run.ps1"
-
-c:\PSTools\PsExec.exe -accepteula -u ton -p $env:JUPYTER_TOKEN cmd /c "start /b $runAsCommand"
+# Run Jupyter Lab as current user
+Start-Process `
+-FilePath "jupyter" `
+-ArgumentList @(
+  "lab",
+  "--IdentityProvider.token=$env:JUPYTER_TOKEN",
+  "--ip=0.0.0.0",
+  "--port=8888",
+  "--ServerApp.allow_remote_access=True",
+  "--ServerApp.trust_xheaders=True",
+  "--no-browser"
+) `
+-WindowStyle Hidden
 
 
 
