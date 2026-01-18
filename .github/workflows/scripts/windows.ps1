@@ -153,17 +153,20 @@ npm run build
 Write-Host "Project built."
 
 
+$ErrorActionPreference = "Stop"
+
 $logDir = "d:\logs"
 New-Item -ItemType Directory -Force -Path $logDir | Out-Null
 
-$stdout = "$logDir\npm.out.log"
-$stderr = "$logDir\npm.err.log"
+$stdout = Join-Path $logDir "npm.out.log"
+$stderr = Join-Path $logDir "npm.err.log"
 
 Write-Host "Starting application in background..."
 
 $proc = Start-Process `
     -FilePath "npm.cmd" `
-    -ArgumentList "run start" `
+    -ArgumentList @("run", "start") `
+    -WorkingDirectory $PSScriptRoot `
     -RedirectStandardOutput $stdout `
     -RedirectStandardError  $stderr `
     -NoNewWindow `
@@ -172,14 +175,16 @@ $proc = Start-Process `
 Start-Sleep -Seconds 3
 
 if ($proc.HasExited) {
-    Write-Error "❌ Application failed to start. ExitCode=$($proc.ExitCode)"
+    Write-Error "❌ Application failed to start (ExitCode=$($proc.ExitCode))"
     Write-Host "---- STDERR ----"
-    Get-Content $stderr -Tail 50
+    if (Test-Path $stderr) {
+        Get-Content $stderr -Tail 50
+    }
     exit 1
 }
 
 Write-Host "✅ Application started successfully (PID=$($proc.Id))"
-#
-# Write-Host "Starting application in background..."
-# Start-Process -FilePath "npm" -ArgumentList "run", "start" -WindowStyle Hidden
-# Write-Host "Application started in background."
+
+# 🔴 CRITICAL FOR GITHUB ACTIONS
+$global:LASTEXITCODE = 0
+exit 0
