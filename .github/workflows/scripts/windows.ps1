@@ -117,20 +117,20 @@ Write-Host "Checking Jupyter version..."
 jupyter --version
 Write-Host "Jupyter version checked."
 
-# Write-Host "Starting Jupyter Lab..."
-# Start-Process `
-# -FilePath "jupyter" `
-# -ArgumentList @(
-#   "lab",
-#   "--IdentityProvider.token=$env:JUPYTER_TOKEN",
-#   "--ip=0.0.0.0",
-#   "--port=8888",
-#   "--ServerApp.allow_remote_access=True",
-#   "--ServerApp.trust_xheaders=True",
-#   "--no-browser"
-# ) `
-# -WindowStyle Hidden
-# Write-Host "Jupyter Lab started."
+Write-Host "Starting Jupyter Lab..."
+Start-Process `
+-FilePath "jupyter" `
+-ArgumentList @(
+  "lab",
+  "--IdentityProvider.token=$env:JUPYTER_TOKEN",
+  "--ip=0.0.0.0",
+  "--port=8888",
+  "--ServerApp.allow_remote_access=True",
+  "--ServerApp.trust_xheaders=True",
+  "--no-browser"
+) `
+-WindowStyle Hidden
+Write-Host "Jupyter Lab started."
 
 Write-Host "Installing opencode-ai..."
 npm i -g opencode-ai
@@ -148,9 +148,9 @@ Write-Host "Installing dependencies..."
 cd d:\electron-mcp\app
 npm install
 Write-Host "Dependencies installed."
-#
-Write-Host "Building project..."
-npm run build
-Write-Host "Project built."
+# #
+# Write-Host "Building project..."
+# npm run build
+# Write-Host "Project built."
 
 Start-Sleep -Seconds 1
