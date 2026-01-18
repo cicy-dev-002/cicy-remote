@@ -13,7 +13,7 @@ import ctypes
 import tkinter as tk
 
 # Initialize MCP server after parsing arguments
-mcp = FastMCP("pyautogui-mcp-server")
+mcp = FastMCP("pyautogui-mcp-server",port=8050)
 from typing import Optional
 
 pyautogui.FAILSAFE = True
