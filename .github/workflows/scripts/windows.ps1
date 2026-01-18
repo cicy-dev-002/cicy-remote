@@ -117,6 +117,8 @@ Write-Host "Checking Jupyter version..."
 jupyter --version
 Write-Host "Jupyter version checked."
 
+cd d:\
+
 Write-Host "Starting Jupyter Lab..."
 Start-Process `
 -FilePath "jupyter" `
