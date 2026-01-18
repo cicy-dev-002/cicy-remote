@@ -2,7 +2,6 @@ $processNames = @("3proxy","electron", "cloudflared")
 $ports = @(3128, 8888, 3389)
 
 while ($true) {
-    break
   Write-Host "=======================================`n"
 
   # ----- Process status -----

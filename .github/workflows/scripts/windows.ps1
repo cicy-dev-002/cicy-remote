@@ -148,9 +148,5 @@ Write-Host "Installing dependencies..."
 cd d:\electron-mcp\app
 npm install
 Write-Host "Dependencies installed."
-# #
-# Write-Host "Building project..."
-# npm run build
-# Write-Host "Project built."
 
 Start-Sleep -Seconds 1
