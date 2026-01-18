@@ -107,29 +107,30 @@ Write-Host "Establishing Cloudflared connection..."
 & "C:\Program Files (x86)\cloudflared\cloudflared.exe" service install $env:CF_TUNNEL
 Write-Host "Cloudflared service installed."
 
-Write-Host "Installing JupyterLab..."
-pip install jupyterlab
-Write-Host "JupyterLab installed."
-
-Write-Host "Checking Jupyter version..."
-jupyter --version
-Write-Host "Jupyter version checked."
-
-Write-Host "Starting Jupyter Lab..."
-Start-Process `
--FilePath "jupyter" `
--ArgumentList @(
-  "lab",
-  "--IdentityProvider.token=$env:JUPYTER_TOKEN",
-  "--ip=0.0.0.0",
-  "--port=8888",
-  "--ServerApp.allow_remote_access=True",
-  "--ServerApp.trust_xheaders=True",
-  "--no-browser"
-) `
--WindowStyle Hidden
-Write-Host "Jupyter Lab started."
-
+pip install pyautogui
+#
+# Write-Host "Installing JupyterLab..."
+# pip install jupyterlab
+# Write-Host "JupyterLab installed."
+#
+# Write-Host "Checking Jupyter version..."
+# jupyter --version
+# Write-Host "Jupyter version checked."
+#
+# Write-Host "Starting Jupyter Lab..."
+# Start-Process `
+# -FilePath "jupyter" `
+# -ArgumentList @(
+#   "lab",
+#   "--IdentityProvider.token=$env:JUPYTER_TOKEN",
+#   "--ip=0.0.0.0",
+#   "--port=8888",
+#   "--ServerApp.allow_remote_access=True",
+#   "--ServerApp.trust_xheaders=True",
+#   "--no-browser"
+# ) `
+# -WindowStyle Hidden
+# Write-Host "Jupyter Lab started."
 
 Write-Host "Installing opencode-ai..."
 npm i -g opencode-ai
