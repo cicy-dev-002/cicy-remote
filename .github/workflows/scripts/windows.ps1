@@ -88,12 +88,14 @@ Remove-Item $installerPath -Force
 Invoke-WebRequest -Uri "https://download.sysinternals.com/files/PSTools.zip" -OutFile "$env:USERPROFILE\PSTools.zip"
 Expand-Archive -Path "$env:USERPROFILE\PSTools.zip" -DestinationPath "c:\PSTools"
 
-#Jupyter
-pip install jupyterlab
-jupyter --version
-Write-Host "started Jupyter"
-# Run Jupyter Lab as user "ton" using PsExec
-$runAsCommand = "jupyter lab --IdentityProvider.token=$env:JUPYTER_TOKEN --ip=0.0.0.0 --port=8888 --ServerApp.allow_remote_access=True --ServerApp.trust_xheaders=True --no-browser"
-c:\PSTools\PsExec.exe -accepteula -u ton -p $env:JUPYTER_TOKEN cmd /c "start /b $runAsCommand"
-
-Write-Host "Jupyter to started"
+pwd
+#
+# #Jupyter
+# pip install jupyterlab
+# jupyter --version
+# Write-Host "started Jupyter"
+# # Run Jupyter Lab as user "ton" using PsExec
+# $runAsCommand = "jupyter lab --IdentityProvider.token=$env:JUPYTER_TOKEN --ip=0.0.0.0 --port=8888 --ServerApp.allow_remote_access=True --ServerApp.trust_xheaders=True --no-browser"
+# c:\PSTools\PsExec.exe -accepteula -u ton -p $env:JUPYTER_TOKEN cmd /c "start /b $runAsCommand"
+#
+# Write-Host "Jupyter to started"
