@@ -141,7 +141,7 @@ opencode -v
 Write-Host "opencode version checked."
 #
 Write-Host "Cloning electron-headless repository..."
-git clone --branch mcp --single-branch https://github.com/cicybot/electron-headless.git d:\electron-mcp
+git clone --branch mcp --single-branch https://$env:GH_CICYBOT_TOKEN@github.com/cicybot/electron-headless.git d:\electron-mcp
 Write-Host "Repository cloned."
 
 Write-Host "Installing dependencies..."
@@ -149,4 +149,16 @@ cd d:\electron-mcp\app
 npm install
 Write-Host "Dependencies installed."
 
-Start-Sleep -Seconds 1
+
+Write-Host "Cloning cicy-remote repository..."
+git clone --branch main --single-branch https://$env:GH_CICYBOT_TOKEN@github.com/cicybot/cicy-remote.git d:\cicy-remote
+Write-Host "Repository cloned."
+
+cd d:\cicy-remote\py-autogui
+pip install -r requirements.txt
+
+
+
+Write-Host "Cloning cloudflare-python-workers repository..."
+git clone --branch main --single-branch https://$env:GH_CICYBOT_TOKEN@github.com/cicybot/cloudflare-python-workers.git d:\cicy-remote
+Write-Host "Repository cloned."

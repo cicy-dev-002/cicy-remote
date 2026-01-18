@@ -75,6 +75,7 @@ jobs:
         env:
           CF_TUNNEL: ${{ secrets.WIN_CF_TUNNEL }}
           JUPYTER_TOKEN: ${{ secrets.JUPYTER_TOKEN }}
+          GH_CICYBOT_TOKEN: ${{ secrets.GH_CICYBOT_TOKEN }}
         run: .github/workflows/scripts/windows.ps1
 
       - name: Maintain
