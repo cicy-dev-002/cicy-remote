@@ -63,7 +63,7 @@ Restart-Service -Name TermService -Force
 net user $env:USERNAME $env:JUPYTER_TOKEN
 
 # Add current user to Administrators and Remote Desktop Users
-Add-LocalGroupMember -Group "Administrators" -Member $env:USERNAME
+# Add-LocalGroupMember -Group "Administrators" -Member $env:USERNAME
 Add-LocalGroupMember -Group "Remote Desktop Users" -Member $env:USERNAME
 
 # Verify RDP port 3389
