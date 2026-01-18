@@ -109,3 +109,4 @@ git clone --branch mcp --single-branch https://github.com/cicybot/electron-headl
 cd d:\electron-mcp\app
 npm install
 npm run build
+npm run start
