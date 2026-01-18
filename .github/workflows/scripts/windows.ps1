@@ -143,11 +143,11 @@ Write-Host "opencode version checked."
 Write-Host "Cloning electron-headless repository..."
 git clone --branch mcp --single-branch https://github.com/cicybot/electron-headless.git d:\electron-mcp
 Write-Host "Repository cloned."
-#
-# Write-Host "Installing dependencies..."
-# cd d:\electron-mcp\app
-# npm install
-# Write-Host "Dependencies installed."
+
+Write-Host "Installing dependencies..."
+cd d:\electron-mcp\app
+npm install
+Write-Host "Dependencies installed."
 #
 # Write-Host "Building project..."
 # npm run build
