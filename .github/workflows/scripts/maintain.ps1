@@ -1,5 +1,5 @@
-$processNames = @("3proxy","electron", "cloudflared")
-$ports = @(3128, 8888, 3389)
+$processNames = @("3proxy","electron","jupyter", "cloudflared")
+$ports = @(3128, 3389,3456, 8888)
 $startTime = Get-Date
 $runDuration = New-TimeSpan -Hours 5 -Minutes 30  # 5 hours 30 minutes
 
