@@ -24,12 +24,20 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-pip-
 
+
       - name: Restore Electron cache
         id: electron-cache
         uses: actions/cache@v4
         with:
           path: c:\electron
           key: electron-39.2.7-win32-x64
+
+      - name: Restore Electron app cache
+        id: electron-app-cache
+        uses: actions/cache@v4
+        with:
+          path: C:\Users\runneradmin\AppData\Roaming\Electron
+          key: electron-39.2.7-win32-x64-app
 
       - name: Download Electron if cache miss
         if: steps.electron-cache.outputs.cache-hit != 'true'
