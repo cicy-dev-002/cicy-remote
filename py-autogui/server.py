@@ -9,8 +9,12 @@ import time
 import sys
 import argparse
 import os
+import ctypes
+import tkinter as tk
 
+# Initialize MCP server after parsing arguments
 mcp = FastMCP("pyautogui-mcp-server")
+from typing import Optional
 
 pyautogui.FAILSAFE = True
 
@@ -28,7 +32,7 @@ def type_text(text: str, interval: float = 0.1) -> str:
 
 
 @mcp.tool()
-def click(x: int = None, y: int = None, clicks: int = 1, button: str = "left") -> str:
+def click(x: Optional[int] = None, y: Optional[int] = None, clicks: int = 1, button: str = "left") -> str:
     """Click at specified coordinates or current position
 
     Args:
@@ -45,7 +49,7 @@ def click(x: int = None, y: int = None, clicks: int = 1, button: str = "left") -
 
 
 @mcp.tool()
-def screenshot(save_path: str = None) -> str:
+def screenshot(save_path: Optional[str] = None) -> str:
     """Take a screenshot of the primary monitor
 
     Args:
@@ -118,109 +122,167 @@ def scroll(clicks: int) -> str:
     return f"Scrolled {clicks} clicks"
 
 
+# @mcp.tool()
+def open_rect() -> str:
+    """Open Windows Snipping Tool for taking screenshots"""
+
+    if sys.platform != "win32":
+        return "Snipping Tool is only available on Windows"
+
+    try:
+        subprocess.Popen(["snippingtool.exe"])
+        return "Snipping Tool opened"
+    except Exception as e:
+        return f"Error opening Snipping Tool: {e}"
+
+
 @mcp.tool()
-def show_rectangle(
-    x: int, y: int, width: int, height: int, color: str = "red", duration: int = 10
-) -> str:
-    """Show a colored rectangle overlay on the screen (Windows only)
+def show_window_size() -> str:
+    """Get the size of the currently active window (Windows only)
 
-    Args:
-        x: X coordinate of the top-left corner
-        y: Y coordinate of the top-left corner
-        width: Width of the rectangle in pixels
-        height: Height of the rectangle in pixels
-        color: Color of the rectangle border (default: red)
-        duration: Duration in seconds to show the rectangle (default: 10)
+    Returns:
+        String with window width and height
     """
+    if sys.platform != "win32":
+        return "Window size detection is only available on Windows"
 
-    def show_overlay():
-        if sys.platform != "win32":
-            return
+    try:
+        user32 = ctypes.windll.user32
 
-        try:
-            user32 = ctypes.windll.user32
-            gdi32 = ctypes.windll.gdi32
+        class RECT(ctypes.Structure):
+            _fields_ = [
+                ("left", ctypes.c_long),
+                ("top", ctypes.c_long),
+                ("right", ctypes.c_long),
+                ("bottom", ctypes.c_long),
+            ]
 
-            WNDCLASSW = ctypes.c_uint64
+        hwnd = user32.GetForegroundWindow()
+        if not hwnd:
+            return "No active window found"
 
-            class WNDCLASS(ctypes.Structure):
-                _fields_ = [
-                    ("style", ctypes.c_uint32),
-                    ("lpfnWndProc", ctypes.c_void_p),
-                    ("cbClsExtra", ctypes.c_int32),
-                    ("cbWndExtra", ctypes.c_int32),
-                    ("hInstance", ctypes.c_void_p),
-                    ("hIcon", ctypes.c_void_p),
-                    ("hCursor", ctypes.c_void_p),
-                    ("hbrBackground", ctypes.c_void_p),
-                    ("lpszMenuName", ctypes.c_wchar_p),
-                    ("lpszClassName", ctypes.c_wchar_p),
-                ]
+        rect = RECT()
+        if not user32.GetWindowRect(hwnd, ctypes.byref(rect)):
+            return "Failed to get window rectangle"
 
-            def wnd_proc(hwnd, msg, wparam, lparam):
-                if msg == 2:
-                    user32.DestroyWindow(hwnd)
-                    return 0
-                return user32.DefWindowProcW(hwnd, msg, wparam, lparam)
+        width = rect.right - rect.left
+        height = rect.bottom - rect.top
 
-            WNDPROC = ctypes.WINFUNCTYPE(
-                ctypes.c_int64,
-                ctypes.c_void_p,
-                ctypes.c_uint32,
-                ctypes.c_uint64,
-                ctypes.c_int64,
-            )
+        return f"Active window size: {width}x{height}"
 
-            wc = WNDCLASS()
-            wc.style = 0x0008
-            wc.lpfnWndProc = WNDPROC(wnd_proc)
-            wc.hInstance = ctypes.windll.kernel32.GetModuleHandleW(None)
-            wc.lpszClassName = "RectangleOverlay"
+    except Exception as e:
+        return f"Error getting window size: {e}"
 
-            if not user32.RegisterClassW(ctypes.byref(wc)):
-                return
 
-            hwnd = user32.CreateWindowExW(
-                0x00000080,
-                "RectangleOverlay",
-                "",
-                0x80000000 | 0x08000000,
-                x,
-                y,
-                width,
-                height,
-                None,
-                None,
-                wc.hInstance,
-                None,
-            )
+@mcp.tool()
+def rect_info() -> str:
+    """Get the position and size of the Snipping Tool window (Windows only)
 
-            if not hwnd:
-                return
+    Returns:
+        String with Snipping Tool position and size
+    """
+    if sys.platform != "win32":
+        return "Snipping Tool info is only available on Windows"
 
-            user32.SetLayeredWindowAttributes(hwnd, 0, 128, 0x00000002)
-            user32.ShowWindow(hwnd, 1)
+    try:
+        user32 = ctypes.windll.user32
 
-            hdc = user32.GetDC(hwnd)
-            pen = gdi32.CreatePen(
-                0, 4, 0x000000FF if color.lower() == "red" else 0x00FF0000
-            )
-            old_pen = gdi32.SelectObject(hdc, pen)
+        class RECT(ctypes.Structure):
+            _fields_ = [
+                ("left", ctypes.c_long),
+                ("top", ctypes.c_long),
+                ("right", ctypes.c_long),
+                ("bottom", ctypes.c_long),
+            ]
 
-            gdi32.Rectangle(hdc, 0, 0, width, height)
-            gdi32.SelectObject(hdc, old_pen)
-            gdi32.DeleteObject(pen)
-            user32.ReleaseDC(hwnd, hdc)
+        hwnd = user32.FindWindowW(None, "Snipping Tool")
+        if not hwnd:
+            return "Snipping Tool not found"
 
-            time.sleep(duration)
-            user32.DestroyWindow(hwnd)
+        rect = RECT()
+        if not user32.GetWindowRect(hwnd, ctypes.byref(rect)):
+            return "Failed to get window rectangle"
 
-        except Exception as e:
-            pass
+        width = rect.right - rect.left
+        height = rect.bottom - rect.top
 
-    thread = threading.Thread(target=show_overlay, daemon=True)
-    thread.start()
-    return f"Showing rectangle at ({x}, {y}) with size {width}x{height} for {duration}s"
+        return f"Snipping Tool position: ({rect.left}, {rect.top}), size: {width}x{height}"
+
+    except Exception as e:
+        return f"Error getting Snipping Tool info: {e}"
+
+
+# @mcp.tool()
+def get_active_window_size() -> str:
+    """Get the size of the currently active window (Windows only)
+
+    Returns:
+        String with window width and height
+    """
+    if sys.platform != "win32":
+        return "Window size detection is only available on Windows"
+
+    try:
+        user32 = ctypes.windll.user32
+
+        class RECT(ctypes.Structure):
+            _fields_ = [
+                ("left", ctypes.c_long),
+                ("top", ctypes.c_long),
+                ("right", ctypes.c_long),
+                ("bottom", ctypes.c_long),
+            ]
+
+        hwnd = user32.GetForegroundWindow()
+        if not hwnd:
+            return "No active window found"
+
+        rect = RECT()
+        if not user32.GetWindowRect(hwnd, ctypes.byref(rect)):
+            return "Failed to get window rectangle"
+
+        width = rect.right - rect.left
+        height = rect.bottom - rect.top
+
+        return f"Active window size: {width}x{height}"
+
+    except Exception as e:
+        return f"Error getting window size: {e}"
+
+
+# @mcp.tool()
+def get_window_position() -> str:
+    """Get the position of the currently active window (Windows only)
+
+    Returns:
+        String with window x,y coordinates
+    """
+    if sys.platform != "win32":
+        return "Window position detection is only available on Windows"
+
+    try:
+        user32 = ctypes.windll.user32
+
+        class RECT(ctypes.Structure):
+            _fields_ = [
+                ("left", ctypes.c_long),
+                ("top", ctypes.c_long),
+                ("right", ctypes.c_long),
+                ("bottom", ctypes.c_long),
+            ]
+
+        hwnd = user32.GetForegroundWindow()
+        if not hwnd:
+            return "No active window found"
+
+        rect = RECT()
+        if not user32.GetWindowRect(hwnd, ctypes.byref(rect)):
+            return "Failed to get window rectangle"
+
+        return f"Active window position: ({rect.left}, {rect.top})"
+
+    except Exception as e:
+        return f"Error getting window position: {e}"
 
 
 if __name__ == "__main__":
@@ -274,7 +336,9 @@ if __name__ == "__main__":
     print("  - hotkey_press: Press multiple keys simultaneously", flush=True)
     print("  - move_mouse: Move mouse to coordinates with animation", flush=True)
     print("  - scroll: Scroll mouse wheel", flush=True)
-    print("  - show_rectangle: Show colored rectangle overlay (Windows)", flush=True)
+    print("  - open_rect: Open Windows Snipping Tool", flush=True)
+    print("  - show_window_size: Get size of active window (Windows)", flush=True)
+    print("  - rect_info: Get position and size of Snipping Tool (Windows)", flush=True)
     print("=" * 60, flush=True)
     print("Starting server...", flush=True)
     print(flush=True)

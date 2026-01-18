@@ -40,10 +40,26 @@ class TestShowRectangle(unittest.TestCase):
     def test_windows_api_calls(self):
         from server import show_rectangle
 
+        class MockThread:
+            def __init__(self, target, daemon=False):
+                self._target = target
+                self.daemon = daemon
+
+            def start(self):
+                self._target()
+
+        mock_windll = MagicMock()
+        mock_windll.user32 = MagicMock()
+        mock_windll.gdi32 = MagicMock()
+        mock_windll.kernel32 = MagicMock()
+
         with (
-            patch("server.ctypes.windll.user32") as mock_user32,
-            patch("server.ctypes.windll.gdi32") as mock_gdi32,
+            patch("ctypes.windll", mock_windll),
+            patch("server.threading.Thread", MockThread),
+            patch("server.time.sleep"),  # Mock sleep to avoid waiting
         ):
+            mock_user32 = mock_windll.user32
+            mock_gdi32 = mock_windll.gdi32
             mock_user32.RegisterClassW.return_value = 1
             mock_user32.CreateWindowExW.return_value = 12345
             mock_user32.GetDC.return_value = 999
@@ -54,6 +70,7 @@ class TestShowRectangle(unittest.TestCase):
 
             mock_gdi32.CreatePen.return_value = 111
             mock_gdi32.SelectObject.return_value = 222
+            mock_windll.kernel32.GetModuleHandleW.return_value = 123
 
             result = show_rectangle(100, 100, 200, 150, "red", 1)
 
@@ -62,6 +79,14 @@ class TestShowRectangle(unittest.TestCase):
             mock_user32.SetLayeredWindowAttributes.assert_called_once()
             mock_user32.ShowWindow.assert_called_once_with(12345, 1)
             mock_user32.GetDC.assert_called_once_with(12345)
+
+    def test_get_active_window_size_non_windows(self):
+        from server import get_active_window_size
+
+        # Temporarily change platform
+        with patch("server.sys.platform", "linux"):
+            result = get_active_window_size()
+            self.assertIn("only available on Windows", result)
 
     def test_non_windows_platform_returns_message(self):
         from server import show_rectangle

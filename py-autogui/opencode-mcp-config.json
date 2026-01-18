@@ -1,0 +1,11 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "mcp": {
+    "pyautogui": {
+      "type": "remote",
+      "url": "http://localhost:8000/mcp",
+      "enabled": true,
+      "description": "PyAutoGUI MCP Server - GUI automation tools for mouse control, keyboard input, screenshot capture, and visual debugging overlays"
+    }
+  }
+}
