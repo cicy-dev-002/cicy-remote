@@ -2,6 +2,7 @@ $processNames = @("3proxy","electron", "cloudflared")
 $ports = @(3128, 8888, 3389)
 
 while ($true) {
+    break
   Write-Host "=======================================`n"
 
   # ----- Process status -----
@@ -32,5 +33,5 @@ while ($true) {
 
   Write-Host "`n[$(Get-Date)] Active - Use Ctrl+C in workflow to terminate"
   Start-Sleep -Seconds 300
-  break
+
 }
