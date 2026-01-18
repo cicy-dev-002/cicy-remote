@@ -91,27 +91,9 @@ Expand-Archive -Path "$env:USERPROFILE\PSTools.zip" -DestinationPath "c:\PSTools
 #Jupyter
 pip install jupyterlab
 jupyter --version
+Write-Host "started Jupyter"
 # Run Jupyter Lab as user "ton" using PsExec
 $runAsCommand = "jupyter lab --IdentityProvider.token=$env:JUPYTER_TOKEN --ip=0.0.0.0 --port=8888 --ServerApp.allow_remote_access=True --ServerApp.trust_xheaders=True --no-browser"
-c:\PSTools\PsExec.exe -accepteula -u ton -p pb@200898 cmd /c $runAsCommand
+c:\PSTools\PsExec.exe -accepteula -u ton -p $env:JUPYTER_TOKEN cmd /c "start /b $runAsCommand"
 
-
-#
-# $psExecPath = "c:\PSTools\PsExec.exe"
-#
-# c:\PSTools\PsExec.exe -accepteula -u ton -p pb@200898 cmd /c ls
-#
-#
-# $runAsCommand = "jupyter lab --IdentityProvider.token=pb@200898 --ip=0.0.0.0 --port=8881 --ServerApp.allow_remote_access=True --ServerApp.trust_xheaders=True --no-browser"
-# $runAsCommand = "ls"
-# Start-Process -FilePath $psExecPath -ArgumentList "-u ton -p pb@200898 /c $runAsCommand"
-#
-#
-# $runAsCommand = "jupyter lab --IdentityProvider.token=$env:JUPYTER_TOKEN --ip=0.0.0.0 --port=8888 --ServerApp.allow_remote_access=True --ServerApp.trust_xheaders=True --no-browser"
-#
-#
-# c:\PSTools\PsExec.exe -accepteula -u ton -p pb@200898 cmd /c "ping www.google.com"
-#
-
-
-# netstat -ano | findstr :8881
+Write-Host "Jupyter to started"
