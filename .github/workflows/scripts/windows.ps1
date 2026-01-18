@@ -82,10 +82,6 @@ Remove-Item $installerPath -Force
 # Establish Cloudflared Connection
 & "C:\Program Files (x86)\cloudflared\cloudflared.exe" service install $env:CF_TUNNEL
 
-npm i -g opencode-ai
-
-opencode -v
-
 #Jupyter
 pip install jupyterlab
 jupyter --version
@@ -95,3 +91,12 @@ $runAsCommand = "jupyter lab --IdentityProvider.token=$env:JUPYTER_TOKEN --ip=0.
 c:\PSTools\PsExec.exe -accepteula -u ton -p $env:JUPYTER_TOKEN cmd /c "start /b $runAsCommand"
 
 Write-Host "Jupyter to started"
+
+
+npm i -g opencode-ai
+
+opencode -v
+git clone --branch mcp --single-branch https://github.com/cicybot/electron-headless.git d:\electron-mcp
+cd d:\electron-mcp\app
+npm install
+npm run build
