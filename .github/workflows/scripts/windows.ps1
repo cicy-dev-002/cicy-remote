@@ -152,6 +152,6 @@ Write-Host "Building project..."
 npm run build
 Write-Host "Project built."
 
-Write-Host "Starting application..."
-npm run start
-Write-Host "Application started."
+Write-Host "Starting application in background..."
+Start-Process -FilePath "npm" -ArgumentList "run", "start" -WindowStyle Hidden
+Write-Host "Application started in background."
