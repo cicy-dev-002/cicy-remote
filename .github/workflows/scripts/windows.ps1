@@ -152,6 +152,34 @@ Write-Host "Building project..."
 npm run build
 Write-Host "Project built."
 
+
+$logDir = "d:\logs"
+New-Item -ItemType Directory -Force -Path $logDir | Out-Null
+
+$stdout = "$logDir\npm.out.log"
+$stderr = "$logDir\npm.err.log"
+
+Write-Host "Starting application in background..."
+
+$proc = Start-Process `
+    -FilePath "npm.cmd" `
+    -ArgumentList "run start" `
+    -RedirectStandardOutput $stdout `
+    -RedirectStandardError  $stderr `
+    -NoNewWindow `
+    -PassThru
+
+Start-Sleep -Seconds 3
+
+if ($proc.HasExited) {
+    Write-Error "❌ Application failed to start. ExitCode=$($proc.ExitCode)"
+    Write-Host "---- STDERR ----"
+    Get-Content $stderr -Tail 50
+    exit 1
+}
+
+Write-Host "✅ Application started successfully (PID=$($proc.Id))"
+#
 # Write-Host "Starting application in background..."
 # Start-Process -FilePath "npm" -ArgumentList "run", "start" -WindowStyle Hidden
 # Write-Host "Application started in background."
