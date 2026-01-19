@@ -163,3 +163,4 @@ pip install -r requirements.txt
 Write-Host "Cloning cloudflare-python-workers repository..."
 git clone --branch main --single-branch https://$env:GH_CICYBOT_TOKEN@github.com/cicybot/cloudflare-python-workers.git d:\cloudflare-python-workers
 Write-Host "Repository cloned."
+
