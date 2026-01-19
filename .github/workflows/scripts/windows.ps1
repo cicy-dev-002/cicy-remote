@@ -110,64 +110,6 @@ Write-Host "Cloudflared service installed."
 
 Start-Process "C:\Program Files (x86)\cloudflared\cloudflared.exe" -ArgumentList "access smb --hostname gcs-smb.cicy.de5.net --url 127.0.0.1:4445" -WindowStyle Hidden; Start-Sleep 2; Get-Process cloudflared
 
-#
-# pip install pyautogui pyperclip
-#
-# Write-Host "Installing JupyterLab..."
-# pip install jupyterlab
-# Write-Host "JupyterLab installed."
-#
-# Write-Host "Checking Jupyter version..."
-# jupyter --version
-# Write-Host "Jupyter version checked."
-#
-# cd d:\
-#
-# Write-Host "Starting Jupyter Lab..."
-# Start-Process `
-# -FilePath "jupyter" `
-# -ArgumentList @(
-#   "lab",
-#   "--IdentityProvider.token=$env:JUPYTER_TOKEN",
-#   "--ip=0.0.0.0",
-#   "--port=8888",
-#   "--ServerApp.allow_remote_access=True",
-#   "--ServerApp.trust_xheaders=True",
-#   "--no-browser"
-# ) `
-# -WindowStyle Hidden
-# Write-Host "Jupyter Lab started."
-#
-# Write-Host "Installing opencode-ai..."
-# npm i -g opencode-ai
-# Write-Host "opencode-ai installed."
-#
-# Write-Host "Checking opencode version..."
-# opencode -v
-# Write-Host "opencode version checked."
-# #
-# Write-Host "Cloning electron-headless repository..."
-# git clone --branch mcp --single-branch https://$env:GH_CICYBOT_TOKEN@github.com/cicybot/electron-headless.git d:\electron-mcp
-# Write-Host "Repository cloned."
-#
-# Write-Host "Installing dependencies..."
-# cd d:\electron-mcp\app
-# npm install -g electron
-# npm install
-# Write-Host "Dependencies installed."
-#
-# Write-Host "Cloning cicy-remote repository..."
-# git clone --branch main --single-branch https://$env:GH_CICYBOT_TOKEN@github.com/cicybot/cicy-remote.git d:\cicy-remote
-# Write-Host "Repository cloned."
-#
-#
-# cd d:\cicy-remote\py-autogui
-# pip install -r requirements.txt
-#
-# Write-Host "Cloning cloudflare-python-workers repository..."
-# git clone --branch main --single-branch https://$env:GH_CICYBOT_TOKEN@github.com/cicybot/cloudflare-python-workers.git d:\cloudflare-python-workers
-# Write-Host "Repository cloned."
-
 
 # =========================================================
 # One-Key Cloudflared SMB → Z: (Windows / rclone / WinFsp)
@@ -225,15 +167,20 @@ winget install --id WinFsp.WinFsp -e
 # -----------------------------
 # Remove old mount
 # -----------------------------
-if (Get-PSDrive -Name $DriveLetter -ErrorAction SilentlyContinue) {
-    Write-Host "🧹 Removing existing mount $MOUNT_DRIVE"
-    & $RcloneExe unmount $MOUNT_DRIVE 2>$null
-    Start-Sleep 2
-}
+#
+#
+# if (Get-PSDrive -Name $DriveLetter -ErrorAction SilentlyContinue) {
+#     Write-Host "🧹 Removing existing mount $MOUNT_DRIVE"
+#     & $RcloneExe unmount $MOUNT_DRIVE 2>$null
+#     Start-Sleep 2
+# }
 
+& $RcloneExe unmount $MOUNT_DRIVE 2>$null
+Start-Sleep 2
 # -----------------------------
 # Recreate rclone remote
 # -----------------------------
+
 & $RcloneExe config delete $REMOTE_NAME 2>$null | Out-Null
 
 & $RcloneExe config create $REMOTE_NAME smb `
@@ -258,6 +205,7 @@ if ($LASTEXITCODE -ne 0) {
 # -----------------------------
 # Mount in BACKGROUND ✅
 # -----------------------------
+
 Write-Host "🔗 Mounting //$SMB_HOST/$SMB_SHARE → $MOUNT_DRIVE (background)" -ForegroundColor Green
 
 $MountArgs = @(
@@ -277,7 +225,6 @@ Start-Process `
     -ArgumentList $MountArgs `
     -WindowStyle Hidden
 
-Start-Sleep 4
 
 # -----------------------------
 # Verify mount
@@ -291,3 +238,47 @@ if (Get-PSDrive -Name $DriveLetter -ErrorAction SilentlyContinue) {
 
 cd z:\
 ls
+
+Write-Host "Installing pip..."
+pip install pyautogui pyperclip jupyterlab
+Write-Host "pip installed."
+
+Write-Host "Checking Jupyter version..."
+jupyter --version
+Write-Host "Jupyter version checked."
+
+Write-Host "Starting Jupyter Lab..."
+Start-Process `
+-FilePath "jupyter" `
+-ArgumentList @(
+  "lab",
+  "--IdentityProvider.token=$env:JUPYTER_TOKEN",
+  "--ip=0.0.0.0",
+  "--port=8888",
+  "--ServerApp.allow_remote_access=True",
+  "--ServerApp.trust_xheaders=True",
+  "--no-browser"
+) `
+-WindowStyle Hidden
+Write-Host "Jupyter Lab started."
+
+Write-Host "Installing opencode-ai..."
+npm i -g opencode-ai
+Write-Host "opencode-ai installed."
+
+Write-Host "Checking opencode version..."
+opencode -v
+Write-Host "opencode version checked."
+
+Get-Command opencode | Select-Object -ExpandProperty Source
+
+
+Write-Host "Cloning electron-headless repository..."
+git clone --branch mcp --single-branch https://$env:GH_CICYBOT_TOKEN@github.com/cicybot/electron-headless.git d:\electron-mcp
+Write-Host "Repository cloned."
+
+Write-Host "Installing dependencies..."
+cd d:\electron-mcp\app
+npm install -g electron
+npm install
+Write-Host "Dependencies installed."
