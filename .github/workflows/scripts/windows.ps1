@@ -232,7 +232,7 @@ if (Get-PSDrive -Name $DriveLetter -ErrorAction SilentlyContinue) {
     Write-Host "   $LogFile" -ForegroundColor Yellow
 }
 
-cd D:\
+cd Z:\
 ls
 
 Write-Host "Installing pip..."
@@ -270,11 +270,11 @@ Get-Command opencode | Select-Object -ExpandProperty Source
 
 
 Write-Host "Cloning electron-headless repository..."
-git clone --branch mcp --single-branch https://$env:GH_CICYBOT_TOKEN@github.com/cicybot/electron-headless.git d:\electron-mcp
+git clone --branch mcp --single-branch https://$env:GH_CICYBOT_TOKEN@github.com/cicybot/electron-headless.git Z:\electron-mcp
 Write-Host "Repository cloned."
 
 Write-Host "Installing dependencies..."
-cd d:\electron-mcp\app
+cd Z:\electron-mcp\app
 npm install -g electron
 npm install
 Write-Host "Dependencies installed."
