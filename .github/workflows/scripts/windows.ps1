@@ -236,7 +236,7 @@ if (Get-PSDrive -Name $DriveLetter -ErrorAction SilentlyContinue) {
     Write-Host "   $LogFile" -ForegroundColor Yellow
 }
 
-cd z:\
+cd D:\
 ls
 
 Write-Host "Installing pip..."
