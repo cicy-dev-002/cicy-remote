@@ -190,7 +190,7 @@ if (Get-PSDrive -Name $DriveLetter -ErrorAction SilentlyContinue) {
 # -----------------------------
 # Test SMB
 # -----------------------------
-Write-Host "🔍 Testing SMB connection..." -ForegroundColor Cyan
+# Write-Host "🔍 Testing SMB connection..." -ForegroundColor Cyan
 # & $RcloneExe ls "${REMOTE_NAME}:$SMB_SHARE" --timeout 10s
 
 if ($LASTEXITCODE -ne 0) {
