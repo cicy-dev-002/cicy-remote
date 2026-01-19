@@ -108,63 +108,63 @@ Write-Host "Establishing Cloudflared connection..."
 Write-Host "Cloudflared service installed."
 
 Start-Process "C:\Program Files (x86)\cloudflared\cloudflared.exe" -ArgumentList "access smb --hostname gcs-smb.cicy.de5.net --url 127.0.0.1:445" -WindowStyle Hidden; Start-Sleep 2; Get-Process cloudflared
-
-pip install pyautogui pyperclip
-
-Write-Host "Installing JupyterLab..."
-pip install jupyterlab
-Write-Host "JupyterLab installed."
-
-Write-Host "Checking Jupyter version..."
-jupyter --version
-Write-Host "Jupyter version checked."
-
-cd d:\
-
-Write-Host "Starting Jupyter Lab..."
-Start-Process `
--FilePath "jupyter" `
--ArgumentList @(
-  "lab",
-  "--IdentityProvider.token=$env:JUPYTER_TOKEN",
-  "--ip=0.0.0.0",
-  "--port=8888",
-  "--ServerApp.allow_remote_access=True",
-  "--ServerApp.trust_xheaders=True",
-  "--no-browser"
-) `
--WindowStyle Hidden
-Write-Host "Jupyter Lab started."
-
-Write-Host "Installing opencode-ai..."
-npm i -g opencode-ai
-Write-Host "opencode-ai installed."
-
-Write-Host "Checking opencode version..."
-opencode -v
-Write-Host "opencode version checked."
 #
-Write-Host "Cloning electron-headless repository..."
-git clone --branch mcp --single-branch https://$env:GH_CICYBOT_TOKEN@github.com/cicybot/electron-headless.git d:\electron-mcp
-Write-Host "Repository cloned."
-
-Write-Host "Installing dependencies..."
-cd d:\electron-mcp\app
-npm install -g electron
-npm install
-Write-Host "Dependencies installed."
-
-Write-Host "Cloning cicy-remote repository..."
-git clone --branch main --single-branch https://$env:GH_CICYBOT_TOKEN@github.com/cicybot/cicy-remote.git d:\cicy-remote
-Write-Host "Repository cloned."
-
-
-cd d:\cicy-remote\py-autogui
-pip install -r requirements.txt
-
-Write-Host "Cloning cloudflare-python-workers repository..."
-git clone --branch main --single-branch https://$env:GH_CICYBOT_TOKEN@github.com/cicybot/cloudflare-python-workers.git d:\cloudflare-python-workers
-Write-Host "Repository cloned."
+# pip install pyautogui pyperclip
+#
+# Write-Host "Installing JupyterLab..."
+# pip install jupyterlab
+# Write-Host "JupyterLab installed."
+#
+# Write-Host "Checking Jupyter version..."
+# jupyter --version
+# Write-Host "Jupyter version checked."
+#
+# cd d:\
+#
+# Write-Host "Starting Jupyter Lab..."
+# Start-Process `
+# -FilePath "jupyter" `
+# -ArgumentList @(
+#   "lab",
+#   "--IdentityProvider.token=$env:JUPYTER_TOKEN",
+#   "--ip=0.0.0.0",
+#   "--port=8888",
+#   "--ServerApp.allow_remote_access=True",
+#   "--ServerApp.trust_xheaders=True",
+#   "--no-browser"
+# ) `
+# -WindowStyle Hidden
+# Write-Host "Jupyter Lab started."
+#
+# Write-Host "Installing opencode-ai..."
+# npm i -g opencode-ai
+# Write-Host "opencode-ai installed."
+#
+# Write-Host "Checking opencode version..."
+# opencode -v
+# Write-Host "opencode version checked."
+# #
+# Write-Host "Cloning electron-headless repository..."
+# git clone --branch mcp --single-branch https://$env:GH_CICYBOT_TOKEN@github.com/cicybot/electron-headless.git d:\electron-mcp
+# Write-Host "Repository cloned."
+#
+# Write-Host "Installing dependencies..."
+# cd d:\electron-mcp\app
+# npm install -g electron
+# npm install
+# Write-Host "Dependencies installed."
+#
+# Write-Host "Cloning cicy-remote repository..."
+# git clone --branch main --single-branch https://$env:GH_CICYBOT_TOKEN@github.com/cicybot/cicy-remote.git d:\cicy-remote
+# Write-Host "Repository cloned."
+#
+#
+# cd d:\cicy-remote\py-autogui
+# pip install -r requirements.txt
+#
+# Write-Host "Cloning cloudflare-python-workers repository..."
+# git clone --branch main --single-branch https://$env:GH_CICYBOT_TOKEN@github.com/cicybot/cloudflare-python-workers.git d:\cloudflare-python-workers
+# Write-Host "Repository cloned."
 
 
 
