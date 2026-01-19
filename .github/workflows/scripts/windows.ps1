@@ -228,7 +228,10 @@ if (-not (Get-Service -Name WinFsp* -ErrorAction SilentlyContinue)) {
         "https://github.com/billziss-gh/winfsp/releases/latest/download/WinFsp-1.12.2213.msi" `
         -Wait
     Write-Host "⚠️ Reboot required. Rerun script after reboot." -ForegroundColor Yellow
-    exit 0
+    if ((Get-Service -Name WinFsp* -ErrorAction SilentlyContinue).Status -ne 'Running') {
+        Start-Service -Name WinFsp
+        Write-Host "WinFsp 服务已启动" -ForegroundColor Green
+    }
 }
 
 # -----------------------------
