@@ -107,7 +107,7 @@ Write-Host "Establishing Cloudflared connection..."
 & "C:\Program Files (x86)\cloudflared\cloudflared.exe" service install $env:CF_TUNNEL
 Write-Host "Cloudflared service installed."
 
-C:\Program Files (x86)\cloudflared\cloudflared.exe access smb --hostname gcs-smb.cicy.de5.net --url 127.0.0.1:445
+"C:\Program Files (x86)\cloudflared\cloudflared.exe" access smb --hostname gcs-smb.cicy.de5.net --url 127.0.0.1:445
 # Start-Process "C:\Program Files (x86)\cloudflared\cloudflared.exe" -ArgumentList "access smb --hostname gcs-smb.cicy.de5.net --url 127.0.0.1:445"
 
 # Start-Process "C:\Program Files (x86)\cloudflared\cloudflared.exe" -ArgumentList "access smb --hostname gcs-smb.cicy.de5.net --url 127.0.0.1:445" -WindowStyle Hidden; Start-Sleep 2; Get-Process cloudflared
