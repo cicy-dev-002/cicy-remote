@@ -281,4 +281,8 @@ npm install -g electron
 npm install
 Write-Host "Dependencies installed."
 
+del "C:\Users\runneradmin\AppData\Local\Google\Chrome\User Data"
+cp -ra Z:\ChromeWin "C:\Users\runneradmin\AppData\Local\Google\Chrome\User Data"
+
+
 
