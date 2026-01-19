@@ -169,7 +169,7 @@ winget install --id WinFsp.WinFsp -e
 # Remove old mount
 # -----------------------------
 if (Get-PSDrive -Name $DriveLetter -ErrorAction SilentlyContinue) {
-    Write-Host "🧹 Removing existing mount $MOUNT_DRIVE"
+    Write-Host " Removing existing mount $MOUNT_DRIVE"
     & $RcloneExe unmount $MOUNT_DRIVE 2>$null
     Start-Sleep 2
 }
