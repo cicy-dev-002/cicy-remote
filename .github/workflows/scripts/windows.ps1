@@ -237,7 +237,8 @@ ls
 npm install -g electron
 
 Write-Host "Installing pip..."
-pip install pyautogui pyperclip jupyterlab
+pip install pyautogui pyperclip jupyterlab pillow pyscreeze
+
 Write-Host "pip installed."
 
 
