@@ -281,3 +281,7 @@ cd D:\electron-mcp\app
 npm install -g electron
 npm install
 Write-Host "Dependencies installed."
+
+
+git config --global user.email "GA-WIN@gmail.com"
+git config --global user.name "GA WIN"
