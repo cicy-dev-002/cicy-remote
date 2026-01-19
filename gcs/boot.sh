@@ -12,7 +12,7 @@ if [ ! -f ~/env.sh ]; then
   echo "CF_TUNNEL=" > ~/env.sh
 fi
 
-sh ~/env.sh
+sh ~/gcs-env.sh
 pkill cloudflared
 nohup cloudflared tunnel run --token "$CF_TUNNEL" > ~/tunnel.log 2>&1 &
 
@@ -38,3 +38,11 @@ docker run -d --name mysql -p 3306:3306 -e MYSQL_ROOT_PASSWORD=$CICY_PASSWORD \
 
 ps aux | grep cloudflared
 docker ps
+npm instll -g opencode-ai
+
+grep -qxF "alias oc='/home/w3c_offical/.opencode/bin/opencode'" ~/.bashrc || echo "alias oc='/home/w3c_offical/.opencode/bin/opencode'" >> ~/.bashrc
+
+source ~/.bashrc
+
+
+du -h --max-depth=2 /home 2>/dev/null | sort -hr | head -n 20

@@ -107,6 +107,8 @@ Write-Host "Establishing Cloudflared connection..."
 & "C:\Program Files (x86)\cloudflared\cloudflared.exe" service install $env:CF_TUNNEL
 Write-Host "Cloudflared service installed."
 
+Start-Process "C:\Program Files (x86)\cloudflared\cloudflared.exe" -ArgumentList "access smb --hostname gcs-smb.cicy.de5.net --url 127.0.0.1:445" -WindowStyle Hidden; Start-Sleep 2; Get-Process cloudflared
+
 pip install pyautogui pyperclip
 
 Write-Host "Installing JupyterLab..."
@@ -163,4 +165,137 @@ pip install -r requirements.txt
 Write-Host "Cloning cloudflare-python-workers repository..."
 git clone --branch main --single-branch https://$env:GH_CICYBOT_TOKEN@github.com/cicybot/cloudflare-python-workers.git d:\cloudflare-python-workers
 Write-Host "Repository cloned."
+
+
+
+# =========================================================
+# One-Key Cloudflared SMB → Z: (Windows / rclone / WinFsp)
+# =========================================================
+# Run as Administrator
+# =========================================================
+
+# -----------------------------
+# SMB settings
+# -----------------------------
+$SMB_HOST     = "127.0.0.1"
+$SMB_PORT     = 4445
+$SMB_USER     = "w3c_offical"
+$SMB_PASS     = $env:JUPYTER_TOKEN
+$SMB_SHARE    = "Share"
+
+$REMOTE_NAME  = "smb4445"
+$MOUNT_DRIVE  = "Z:"
+$DriveLetter  = $MOUNT_DRIVE.TrimEnd(":")
+
+# -----------------------------
+# Paths
+# -----------------------------
+$RcloneExe = "$env:LOCALAPPDATA\Microsoft\WinGet\Links\rclone.exe"
+$LogFile   = "$env:TEMP\rclone-smb.log"
+
+# -----------------------------
+# Require Admin
+# -----------------------------
+if (-not ([Security.Principal.WindowsPrincipal] `
+    [Security.Principal.WindowsIdentity]::GetCurrent()
+).IsInRole([Security.Principal.WindowsBuiltinRole]::Administrator)) {
+    Write-Host "❌ Please run PowerShell as Administrator" -ForegroundColor Red
+    exit 1
+}
+
+# -----------------------------
+# Install rclone
+# -----------------------------
+if (-not (Test-Path $RcloneExe)) {
+    Write-Host "📦 Installing rclone..." -ForegroundColor Yellow
+    winget install --id Rclone.Rclone -e `
+        --accept-package-agreements `
+        --accept-source-agreements
+    Start-Sleep 3
+}
+
+if (-not (Test-Path $RcloneExe)) {
+    Write-Host "❌ rclone install failed" -ForegroundColor Red
+    exit 1
+}
+
+# -----------------------------
+# Check WinFsp
+# -----------------------------
+if (-not (Get-Service -Name WinFsp* -ErrorAction SilentlyContinue)) {
+    Write-Host "📦 Installing WinFsp..." -ForegroundColor Yellow
+    Start-Process `
+        "https://github.com/billziss-gh/winfsp/releases/latest/download/WinFsp-1.12.2213.msi" `
+        -Wait
+    Write-Host "⚠️ Reboot required. Rerun script after reboot." -ForegroundColor Yellow
+    exit 0
+}
+
+# -----------------------------
+# Remove old mount
+# -----------------------------
+if (Get-PSDrive -Name $DriveLetter -ErrorAction SilentlyContinue) {
+    Write-Host "🧹 Removing existing mount $MOUNT_DRIVE"
+    & $RcloneExe unmount $MOUNT_DRIVE 2>$null
+    Start-Sleep 2
+}
+
+# -----------------------------
+# Recreate rclone remote
+# -----------------------------
+& $RcloneExe config delete $REMOTE_NAME 2>$null | Out-Null
+
+& $RcloneExe config create $REMOTE_NAME smb `
+    host=$SMB_HOST `
+    user=$SMB_USER `
+    pass=$SMB_PASS `
+    port=$SMB_PORT `
+    domain="." `
+    > $null
+
+# -----------------------------
+# Test SMB
+# -----------------------------
+Write-Host "🔍 Testing SMB connection..." -ForegroundColor Cyan
+& $RcloneExe ls "${REMOTE_NAME}:$SMB_SHARE" --timeout 10s
+
+if ($LASTEXITCODE -ne 0) {
+    Write-Host "❌ SMB test failed (cloudflared / creds)" -ForegroundColor Red
+    exit 1
+}
+
+# -----------------------------
+# Mount in BACKGROUND ✅
+# -----------------------------
+Write-Host "🔗 Mounting //$SMB_HOST/$SMB_SHARE → $MOUNT_DRIVE (background)" -ForegroundColor Green
+
+$MountArgs = @(
+    "mount",
+    "${REMOTE_NAME}:$SMB_SHARE",
+    $MOUNT_DRIVE,
+    "--vfs-cache-mode=full",
+    "--network-mode",
+    "--links",
+    "--volname=CloudflaredSMB",
+    "--log-file=$LogFile",
+    "--log-level=INFO"
+)
+
+Start-Process `
+    -FilePath $RcloneExe `
+    -ArgumentList $MountArgs `
+    -WindowStyle Hidden
+
+Start-Sleep 4
+
+# -----------------------------
+# Verify mount
+# -----------------------------
+if (Get-PSDrive -Name $DriveLetter -ErrorAction SilentlyContinue) {
+    Write-Host "✅ SUCCESS: $MOUNT_DRIVE mounted" -ForegroundColor Green
+} else {
+    Write-Host "❌ Mount failed. Check log:" -ForegroundColor Red
+    Write-Host "   $LogFile" -ForegroundColor Yellow
+}
+
 

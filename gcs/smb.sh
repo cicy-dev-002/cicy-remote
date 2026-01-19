@@ -7,10 +7,10 @@ SHARE_NAME="Share"
 SHARE_DIR="/home/$(whoami)/Share"
 SMB_CONF="/etc/samba/smb.conf"
 SMB_USER="$(whoami)"
-SMB_PASS="$CICY_PASSWORD"
+SMB_PASS="$JUPYTER_TOKEN"
 
 echo "[+] Updating packages"
-sudo apt update -y
+# sudo apt update -y
 sudo apt install -y samba smbclient fswatch cifs-utils
 
 echo "[+] Creating share directory"
@@ -109,6 +109,8 @@ else
   cat /tmp/smbclient_test.log
   exit 1
 fi
+
+smbclient -L localhost -p 445 -U $SMB_USER
 
 echo
 echo "✅ SMB READY"

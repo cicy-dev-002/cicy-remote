@@ -5,7 +5,7 @@ $runDuration = New-TimeSpan -Hours 5 -Minutes 30  # 5 hours 30 minutes
 
 while ($true) {
     Write-Host "=======================================`n"
-
+    break
     # ----- Process status -----
     foreach ($name in $processNames) {
         $procs = Get-Process -Name $name -ErrorAction SilentlyContinue
