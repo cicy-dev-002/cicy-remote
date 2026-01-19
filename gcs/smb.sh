@@ -110,7 +110,7 @@ else
   exit 1
 fi
 
-smbclient -L localhost -p 445 -U $SMB_USER
+echo "$SMB_PASS" | smbclient -L localhost -p 445 -U $SMB_USER
 
 echo
 echo "✅ SMB READY"
