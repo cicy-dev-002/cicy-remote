@@ -219,20 +219,10 @@ if (-not (Test-Path $RcloneExe)) {
     exit 1
 }
 
-# -----------------------------
-# Check WinFsp
-# -----------------------------
-if (-not (Get-Service -Name WinFsp* -ErrorAction SilentlyContinue)) {
-    Write-Host "📦 Installing WinFsp..." -ForegroundColor Yellow
-    Start-Process `
-        "https://github.com/billziss-gh/winfsp/releases/latest/download/WinFsp-1.12.2213.msi" `
-        -Wait
-    Write-Host "⚠️ Reboot required. Rerun script after reboot." -ForegroundColor Yellow
-    if ((Get-Service -Name WinFsp* -ErrorAction SilentlyContinue).Status -ne 'Running') {
-        Start-Service -Name WinFsp
-        Write-Host "WinFsp 服务已启动" -ForegroundColor Green
-    }
-}
+winget install --id WinFsp.WinFsp -e
+
+Start-Service -Name WinFsp
+Get-Service -Name WinFsp*
 
 # -----------------------------
 # Remove old mount
