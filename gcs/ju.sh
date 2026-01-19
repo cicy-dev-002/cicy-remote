@@ -1,4 +1,4 @@
-source ~/env.sh
+source ~/gcs-env.sh
 ## jupyter
 pkill -f jupyter
 
