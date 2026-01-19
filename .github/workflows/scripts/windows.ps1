@@ -289,4 +289,5 @@ if (Get-PSDrive -Name $DriveLetter -ErrorAction SilentlyContinue) {
     Write-Host "   $LogFile" -ForegroundColor Yellow
 }
 
-
+cd z:\
+ls -alh
