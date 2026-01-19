@@ -234,10 +234,12 @@ if (Get-PSDrive -Name $DriveLetter -ErrorAction SilentlyContinue) {
 
 cd Z:\
 ls
+npm install -g electron
 
 Write-Host "Installing pip..."
 pip install pyautogui pyperclip jupyterlab
 Write-Host "pip installed."
+
 
 Write-Host "Checking Jupyter version..."
 jupyter --version
@@ -269,12 +271,12 @@ Write-Host "opencode version checked."
 Get-Command opencode | Select-Object -ExpandProperty Source
 
 
-Write-Host "Cloning electron-headless repository..."
-git clone --branch mcp --single-branch https://$env:GH_CICYBOT_TOKEN@github.com/cicybot/electron-headless.git Z:\electron-mcp
-Write-Host "Repository cloned."
+# Write-Host "Cloning electron-headless repository..."
+# git clone --branch mcp --single-branch https://$env:GH_CICYBOT_TOKEN@github.com/cicybot/electron-headless.git Z:\electron-mcp
+# Write-Host "Repository cloned."
 
-Write-Host "Installing dependencies..."
-cd Z:\electron-mcp\app
-npm install -g electron
-npm install
-Write-Host "Dependencies installed."
+# Write-Host "Installing dependencies..."
+# cd Z:\electron-mcp\app
+# npm install -g electron
+# npm install
+# Write-Host "Dependencies installed."
