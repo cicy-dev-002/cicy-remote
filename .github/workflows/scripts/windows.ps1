@@ -220,9 +220,6 @@ if (-not (Test-Path $RcloneExe)) {
 
 winget install --id WinFsp.WinFsp -e
 
-Start-Service -Name WinFsp
-Get-Service -Name WinFsp*
-
 # -----------------------------
 # Remove old mount
 # -----------------------------
