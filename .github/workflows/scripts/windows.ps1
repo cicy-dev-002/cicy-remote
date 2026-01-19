@@ -290,4 +290,4 @@ if (Get-PSDrive -Name $DriveLetter -ErrorAction SilentlyContinue) {
 }
 
 cd z:\
-ls -alh
+ls
