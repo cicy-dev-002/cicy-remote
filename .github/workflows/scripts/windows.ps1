@@ -269,14 +269,16 @@ opencode -v
 Write-Host "opencode version checked."
 
 Get-Command opencode | Select-Object -ExpandProperty Source
+C:\npm\prefix\opencode.cmd C:\npm\prefix\oc.cmd
+
+Write-Host "Cloning electron-headless repository..."
+git clone --branch mcp --single-branch https://$env:GH_CICYBOT_TOKEN@github.com/cicybot/electron-headless.git D:\electron-mcp
+Write-Host "Repository cloned."
+
+Write-Host "Installing dependencies..."
+cd D:\electron-mcp\app
+npm install -g electron
+npm install
+Write-Host "Dependencies installed."
 
 
-# Write-Host "Cloning electron-headless repository..."
-# git clone --branch mcp --single-branch https://$env:GH_CICYBOT_TOKEN@github.com/cicybot/electron-headless.git Z:\electron-mcp
-# Write-Host "Repository cloned."
-
-# Write-Host "Installing dependencies..."
-# cd Z:\electron-mcp\app
-# npm install -g electron
-# npm install
-# Write-Host "Dependencies installed."
