@@ -111,6 +111,7 @@ Write-Host "Cloudflared service installed."
 Start-Process "C:\Program Files (x86)\cloudflared\cloudflared.exe" -ArgumentList "access smb --hostname gcs-smb.cicy.de5.net --url 127.0.0.1:4445" -WindowStyle Hidden; Start-Sleep 2; Get-Process cloudflared
 
 
+
 # =========================================================
 # One-Key Cloudflared SMB → Z: (Windows / rclone / WinFsp)
 # =========================================================
@@ -167,20 +168,15 @@ winget install --id WinFsp.WinFsp -e
 # -----------------------------
 # Remove old mount
 # -----------------------------
-#
-#
-# if (Get-PSDrive -Name $DriveLetter -ErrorAction SilentlyContinue) {
-#     Write-Host "🧹 Removing existing mount $MOUNT_DRIVE"
-#     & $RcloneExe unmount $MOUNT_DRIVE 2>$null
-#     Start-Sleep 2
-# }
+if (Get-PSDrive -Name $DriveLetter -ErrorAction SilentlyContinue) {
+    Write-Host "🧹 Removing existing mount $MOUNT_DRIVE"
+    & $RcloneExe unmount $MOUNT_DRIVE 2>$null
+    Start-Sleep 2
+}
 
-& $RcloneExe unmount $MOUNT_DRIVE 2>$null
-Start-Sleep 2
 # -----------------------------
 # Recreate rclone remote
 # -----------------------------
-
 & $RcloneExe config delete $REMOTE_NAME 2>$null | Out-Null
 
 & $RcloneExe config create $REMOTE_NAME smb `
@@ -205,7 +201,6 @@ if ($LASTEXITCODE -ne 0) {
 # -----------------------------
 # Mount in BACKGROUND ✅
 # -----------------------------
-
 Write-Host "🔗 Mounting //$SMB_HOST/$SMB_SHARE → $MOUNT_DRIVE (background)" -ForegroundColor Green
 
 $MountArgs = @(
@@ -225,6 +220,7 @@ Start-Process `
     -ArgumentList $MountArgs `
     -WindowStyle Hidden
 
+Start-Sleep 4
 
 # -----------------------------
 # Verify mount
