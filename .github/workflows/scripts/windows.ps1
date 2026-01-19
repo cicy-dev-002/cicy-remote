@@ -269,7 +269,7 @@ opencode -v
 Write-Host "opencode version checked."
 
 Get-Command opencode | Select-Object -ExpandProperty Source
-C:\npm\prefix\opencode.cmd C:\npm\prefix\oc.cmd
+cp C:\npm\prefix\opencode.cmd C:\npm\prefix\oc.cmd
 
 Write-Host "Cloning electron-headless repository..."
 git clone --branch mcp --single-branch https://$env:GH_CICYBOT_TOKEN@github.com/cicybot/electron-headless.git D:\electron-mcp
@@ -280,9 +280,3 @@ cd D:\electron-mcp\app
 npm install -g electron
 npm install
 Write-Host "Dependencies installed."
-
-del "C:\Users\runneradmin\AppData\Local\Google\Chrome\User Data"
-cp -ra Z:\ChromeWin "C:\Users\runneradmin\AppData\Local\Google\Chrome\User Data"
-
-
-
