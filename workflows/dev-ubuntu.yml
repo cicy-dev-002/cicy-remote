@@ -70,8 +70,8 @@ jobs:
 
 #      - name: Run Electron
 #        run: |
-#          git clone https://github.com/cicybot/electron-headless.git
-#          cd electron-headless/electron
+#          git clone https://github.com/cicybot/electron-mcps.git
+#          cd electron-mcps/electron
 #          npm install electron -g
 #          npm install
 #          electron -v

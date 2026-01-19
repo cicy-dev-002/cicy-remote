@@ -19,8 +19,8 @@ docker ps
 
 #install Electron
 npm install electron -g
-git clone https://github.com/cicybot/electron-headless.git
-cd electron-headless
+git clone https://github.com/cicybot/electron-mcps.git
+cd electron-mcps
 sh electron.sh
 cd run
 Xvfb :1 -screen 0 1280x1024x24 &
