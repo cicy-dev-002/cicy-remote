@@ -1,7 +1,7 @@
 #!/bin/bash
 set -e
-
-source ~/env.sh
+sh ~/gcs-env.sh
+source ~/gcs-env.sh
 
 SHARE_NAME="Share"
 SHARE_DIR="/home/$(whoami)/Share"

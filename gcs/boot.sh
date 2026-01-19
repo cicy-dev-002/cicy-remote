@@ -13,6 +13,7 @@ if [ ! -f ~/env.sh ]; then
 fi
 
 sh ~/gcs-env.sh
+source ~/gcs-env.sh
 pkill cloudflared
 nohup cloudflared tunnel run --token "$CF_TUNNEL" > ~/tunnel.log 2>&1 &
 
