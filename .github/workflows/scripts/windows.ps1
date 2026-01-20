@@ -108,6 +108,10 @@ Write-Host "Establishing Cloudflared connection..."
 Write-Host "Cloudflared service installed."
 
 
+Start-Process "C:\Program Files (x86)\cloudflared\cloudflared.exe" -ArgumentList "access smb --hostname gcs-smb.cicy.de5.net --url 127.0.0.1:4445" -WindowStyle Hidden; Start-Sleep 2; Get-Process cloudflared
+
+
+
 # =========================================================
 # One-Key Cloudflared SMB → Z: (Windows / rclone / WinFsp)
 # =========================================================
@@ -228,6 +232,8 @@ if (Get-PSDrive -Name $DriveLetter -ErrorAction SilentlyContinue) {
     Write-Host "   $LogFile" -ForegroundColor Yellow
 }
 
+cd Z:\
+ls
 npm install -g electron
 
 Write-Host "Installing pip..."
@@ -279,6 +285,3 @@ Write-Host "Dependencies installed."
 
 git config --global user.email "GA-WIN@gmail.com"
 git config --global user.name "GA WIN"
-
-
-Start-Process "C:\Program Files (x86)\cloudflared\cloudflared.exe" -ArgumentList "access smb --hostname gcs-smb.cicy.de5.net --url 127.0.0.1:4445"; Start-Sleep 2; Get-Process cloudflared

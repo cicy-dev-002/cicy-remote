@@ -78,8 +78,8 @@ jobs:
           GH_CICYBOT_TOKEN: ${{ secrets.GH_CICYBOT_TOKEN }}
         run: .github/workflows/scripts/windows.ps1
 
-#      - name: Maintain
-#        shell: pwsh
-#        run: .github/workflows/scripts/maintain.ps1
-#
+      - name: Maintain
+        shell: pwsh
+        run: .github/workflows/scripts/maintain.ps1
+
 
