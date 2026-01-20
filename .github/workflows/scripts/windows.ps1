@@ -232,8 +232,6 @@ if (Get-PSDrive -Name $DriveLetter -ErrorAction SilentlyContinue) {
     Write-Host "   $LogFile" -ForegroundColor Yellow
 }
 
-cd Z:\
-ls
 npm install -g electron
 
 Write-Host "Installing pip..."
