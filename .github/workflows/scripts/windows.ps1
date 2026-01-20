@@ -121,116 +121,116 @@ Start-Process "C:\Program Files (x86)\cloudflared\cloudflared.exe" -ArgumentList
 # -----------------------------
 # SMB settings
 # -----------------------------
-$SMB_HOST     = "127.0.0.1"
-$SMB_PORT     = 4445
-$SMB_USER     = "w3c_offical"
-$SMB_PASS     = $env:JUPYTER_TOKEN
-$SMB_SHARE    = "Share"
-
-$REMOTE_NAME  = "smb4445"
-$MOUNT_DRIVE  = "Z:"
-$DriveLetter  = $MOUNT_DRIVE.TrimEnd(":")
-
-# -----------------------------
-# Paths
-# -----------------------------
-$RcloneExe = "$env:LOCALAPPDATA\Microsoft\WinGet\Links\rclone.exe"
-$LogFile   = "$env:TEMP\rclone-smb.log"
-
-# -----------------------------
-# Require Admin
-# -----------------------------
-if (-not ([Security.Principal.WindowsPrincipal] `
-    [Security.Principal.WindowsIdentity]::GetCurrent()
-).IsInRole([Security.Principal.WindowsBuiltinRole]::Administrator)) {
-    Write-Host "❌ Please run PowerShell as Administrator" -ForegroundColor Red
-    exit 1
-}
-
-# -----------------------------
-# Install rclone
-# -----------------------------
-if (-not (Test-Path $RcloneExe)) {
-    Write-Host "📦 Installing rclone..." -ForegroundColor Yellow
-    winget install --id Rclone.Rclone -e `
-        --accept-package-agreements `
-        --accept-source-agreements
-    Start-Sleep 3
-}
-
-if (-not (Test-Path $RcloneExe)) {
-    Write-Host "❌ rclone install failed" -ForegroundColor Red
-    exit 1
-}
-
-winget install --id WinFsp.WinFsp -e
-
-# -----------------------------
-# Remove old mount
-# -----------------------------
-if (Get-PSDrive -Name $DriveLetter -ErrorAction SilentlyContinue) {
-    Write-Host " Removing existing mount $MOUNT_DRIVE"
-    & $RcloneExe unmount $MOUNT_DRIVE 2>$null
-    Start-Sleep 2
-}
-
-# -----------------------------
-# Recreate rclone remote
-# -----------------------------
-& $RcloneExe config delete $REMOTE_NAME 2>$null | Out-Null
-
-& $RcloneExe config create $REMOTE_NAME smb `
-    host=$SMB_HOST `
-    user=$SMB_USER `
-    pass=$SMB_PASS `
-    port=$SMB_PORT `
-    domain="." `
-    > $null
-
-# -----------------------------
-# Test SMB
-# -----------------------------
-# Write-Host "🔍 Testing SMB connection..." -ForegroundColor Cyan
-# & $RcloneExe ls "${REMOTE_NAME}:$SMB_SHARE" --timeout 10s
-
-if ($LASTEXITCODE -ne 0) {
-    Write-Host "❌ SMB test failed (cloudflared / creds)" -ForegroundColor Red
-    exit 1
-}
-
-# -----------------------------
-# Mount in BACKGROUND ✅
-# -----------------------------
-Write-Host "🔗 Mounting //$SMB_HOST/$SMB_SHARE → $MOUNT_DRIVE (background)" -ForegroundColor Green
-
-$MountArgs = @(
-    "mount",
-    "${REMOTE_NAME}:$SMB_SHARE",
-    $MOUNT_DRIVE,
-    "--vfs-cache-mode=full",
-    "--network-mode",
-    "--links",
-    "--volname=CloudflaredSMB",
-    "--log-file=$LogFile",
-    "--log-level=INFO"
-)
-
-Start-Process `
-    -FilePath $RcloneExe `
-    -ArgumentList $MountArgs `
-    -WindowStyle Hidden
-
-Start-Sleep 4
-
-# -----------------------------
-# Verify mount
-# -----------------------------
-if (Get-PSDrive -Name $DriveLetter -ErrorAction SilentlyContinue) {
-    Write-Host "✅ SUCCESS: $MOUNT_DRIVE mounted" -ForegroundColor Green
-} else {
-    Write-Host "❌ Mount failed. Check log:" -ForegroundColor Red
-    Write-Host "   $LogFile" -ForegroundColor Yellow
-}
+# $SMB_HOST     = "127.0.0.1"
+# $SMB_PORT     = 4445
+# $SMB_USER     = "w3c_offical"
+# $SMB_PASS     = $env:JUPYTER_TOKEN
+# $SMB_SHARE    = "Share"
+#
+# $REMOTE_NAME  = "smb4445"
+# $MOUNT_DRIVE  = "Z:"
+# $DriveLetter  = $MOUNT_DRIVE.TrimEnd(":")
+#
+# # -----------------------------
+# # Paths
+# # -----------------------------
+# $RcloneExe = "$env:LOCALAPPDATA\Microsoft\WinGet\Links\rclone.exe"
+# $LogFile   = "$env:TEMP\rclone-smb.log"
+#
+# # -----------------------------
+# # Require Admin
+# # -----------------------------
+# if (-not ([Security.Principal.WindowsPrincipal] `
+#     [Security.Principal.WindowsIdentity]::GetCurrent()
+# ).IsInRole([Security.Principal.WindowsBuiltinRole]::Administrator)) {
+#     Write-Host "❌ Please run PowerShell as Administrator" -ForegroundColor Red
+#     exit 1
+# }
+#
+# # -----------------------------
+# # Install rclone
+# # -----------------------------
+# if (-not (Test-Path $RcloneExe)) {
+#     Write-Host "📦 Installing rclone..." -ForegroundColor Yellow
+#     winget install --id Rclone.Rclone -e `
+#         --accept-package-agreements `
+#         --accept-source-agreements
+#     Start-Sleep 3
+# }
+#
+# if (-not (Test-Path $RcloneExe)) {
+#     Write-Host "❌ rclone install failed" -ForegroundColor Red
+#     exit 1
+# }
+#
+# winget install --id WinFsp.WinFsp -e
+#
+# # -----------------------------
+# # Remove old mount
+# # -----------------------------
+# if (Get-PSDrive -Name $DriveLetter -ErrorAction SilentlyContinue) {
+#     Write-Host " Removing existing mount $MOUNT_DRIVE"
+#     & $RcloneExe unmount $MOUNT_DRIVE 2>$null
+#     Start-Sleep 2
+# }
+#
+# # -----------------------------
+# # Recreate rclone remote
+# # -----------------------------
+# & $RcloneExe config delete $REMOTE_NAME 2>$null | Out-Null
+#
+# & $RcloneExe config create $REMOTE_NAME smb `
+#     host=$SMB_HOST `
+#     user=$SMB_USER `
+#     pass=$SMB_PASS `
+#     port=$SMB_PORT `
+#     domain="." `
+#     > $null
+#
+# # -----------------------------
+# # Test SMB
+# # -----------------------------
+# # Write-Host "🔍 Testing SMB connection..." -ForegroundColor Cyan
+# # & $RcloneExe ls "${REMOTE_NAME}:$SMB_SHARE" --timeout 10s
+#
+# if ($LASTEXITCODE -ne 0) {
+#     Write-Host "❌ SMB test failed (cloudflared / creds)" -ForegroundColor Red
+#     exit 1
+# }
+#
+# # -----------------------------
+# # Mount in BACKGROUND ✅
+# # -----------------------------
+# Write-Host "🔗 Mounting //$SMB_HOST/$SMB_SHARE → $MOUNT_DRIVE (background)" -ForegroundColor Green
+#
+# $MountArgs = @(
+#     "mount",
+#     "${REMOTE_NAME}:$SMB_SHARE",
+#     $MOUNT_DRIVE,
+#     "--vfs-cache-mode=full",
+#     "--network-mode",
+#     "--links",
+#     "--volname=CloudflaredSMB",
+#     "--log-file=$LogFile",
+#     "--log-level=INFO"
+# )
+#
+# Start-Process `
+#     -FilePath $RcloneExe `
+#     -ArgumentList $MountArgs `
+#     -WindowStyle Hidden
+#
+# Start-Sleep 4
+#
+# # -----------------------------
+# # Verify mount
+# # -----------------------------
+# if (Get-PSDrive -Name $DriveLetter -ErrorAction SilentlyContinue) {
+#     Write-Host "✅ SUCCESS: $MOUNT_DRIVE mounted" -ForegroundColor Green
+# } else {
+#     Write-Host "❌ Mount failed. Check log:" -ForegroundColor Red
+#     Write-Host "   $LogFile" -ForegroundColor Yellow
+# }
 
 npm install -g electron
 
@@ -282,8 +282,22 @@ npm install -g electron
 npm install
 npm run build
 
+
 git config --global user.email "GA-WIN@gmail.com"
 git config --global user.name "GA WIN"
+
+# --------------------------
+# 启动独立窗口运行 watch-changelog
+# --------------------------
+Write-Host "`n[5/5] 启动 changelog 监听（新窗口）..." -ForegroundColor Green
+$watchCommand = "D:\electron-mcp\app && npm run watch-changelog"
+
+# 使用 PowerShell 新窗口执行命令（-NoNewWindow 禁用会打开新窗口）
+Start-Process powershell.exe -ArgumentList "-NoProfile -ExecutionPolicy Bypass -Command ""$watchCommand"""
+
+Write-Host "`n===== 所有流程执行完成！=====" -ForegroundColor Green
+Write-Host "提示：changelog 监听已在新窗口启动，请勿关闭该窗口" -ForegroundColor Yellow
+
 
 New-Item -Path C:\running.txt -ItemType File -Force | Out-Null
 
