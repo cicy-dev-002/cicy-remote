@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
   push:
     branches:
-      - main
+      - dev
 
 jobs:
   dev-windows:
@@ -72,6 +72,7 @@ jobs:
         with:
           path: ~\electron-mcp
           key: electron-mcp-user
+
       - name: Download Electron if cache miss
         if: steps.electron-cache.outputs.cache-hit != 'true'
         shell: pwsh
