@@ -41,7 +41,7 @@ ps aux | grep cloudflared
 docker ps
 npm instll -g opencode-ai
 
-grep -qxF "alias oc='/home/w3c_offical/.opencode/bin/opencode'" ~/.bashrc || echo "alias oc='/home/w3c_offical/.opencode/bin/opencode'" >> ~/.bashrc
+grep -qxF "alias oc='~/.opencode/bin/opencode'" ~/.bashrc || echo "alias oc='~/.opencode/bin/opencode'" >> ~/.bashrc
 
 source ~/.bashrc
 
