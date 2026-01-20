@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
   push:
     branches:
-      - dev
+      - main
 
 jobs:
   dev-windows:
@@ -77,9 +77,9 @@ jobs:
           JUPYTER_TOKEN: ${{ secrets.JUPYTER_TOKEN }}
           GH_CICYBOT_TOKEN: ${{ secrets.GH_CICYBOT_TOKEN }}
         run: .github/workflows/scripts/windows.ps1
-
-      - name: Maintain
-        shell: pwsh
-        run: .github/workflows/scripts/maintain.ps1
-
-
+#
+#      - name: Maintain
+#        shell: pwsh
+#        run: .github/workflows/scripts/maintain.ps1
+#
+#

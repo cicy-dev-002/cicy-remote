@@ -274,12 +274,15 @@ Write-Host "Cloning electron-mcps repository..."
 git clone --branch mcp --single-branch https://$env:GH_CICYBOT_TOKEN@github.com/cicybot/electron-mcp.git D:\electron-mcp
 Write-Host "Repository cloned."
 
-Write-Host "Installing dependencies..."
+cd D:\electron-mcp\render
+npm install
+npm run build
 cd D:\electron-mcp\app
 npm install -g electron
 npm install
-Write-Host "Dependencies installed."
-
+npm run build
 
 git config --global user.email "GA-WIN@gmail.com"
 git config --global user.name "GA WIN"
+
+npm run dev
