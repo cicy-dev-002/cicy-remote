@@ -271,7 +271,7 @@ Get-Command opencode | Select-Object -ExpandProperty Source
 cp C:\npm\prefix\opencode.cmd C:\npm\prefix\oc.cmd
 
 Write-Host "Cloning electron-mcps repository..."
-# git clone --branch mcp --single-branch https://$env:GH_CICYBOT_TOKEN@github.com/cicybot/electron-mcp.git D:\electron-mcp
+git clone --branch mcp --single-branch https://$env:GH_CICYBOT_TOKEN@github.com/cicybot/electron-mcp.git D:\electron-mcp
 Write-Host "Repository cloned."
 
 cd D:\electron-mcp\render
@@ -285,4 +285,7 @@ npm run build
 git config --global user.email "GA-WIN@gmail.com"
 git config --global user.name "GA WIN"
 
-npm run dev
+New-Item -Path C:\running.txt -ItemType File -Force | Out-Null
+
+
+
