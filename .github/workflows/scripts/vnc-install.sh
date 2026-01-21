@@ -107,8 +107,18 @@ create_startup_scripts() {
     print_info "Creating startup scripts..."
 
     # VNC startup script
-    cp ./xstartup.sh  ~/.vnc/xstartup
-    chmod +x ~/.vnc/xstartup
+    cat > ~/.vnc/xstartup << 'EOF'
+#!/bin/bash
+# XFCE VNC startup script
+# 清除会话管理器
+unset SESSION_MANAGER
+unset DBUS_SESSION_BUS_ADDRESS
+cd ~/mcp/app
+nohup npm start &
+# 启动XFCE桌面
+exec startxfce4
+    EOF
+        chmod +x ~/.vnc/xstartup
 
     # Main startup script
     cat > ~/start-vnc-novnc.sh << EOF

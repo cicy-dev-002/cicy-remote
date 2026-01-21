@@ -7,7 +7,7 @@ set -e
 
 # 配置
 VNC_DISPLAY=":1"
-VNC_GEOMETRY="1920x1080"  # 强制使用2K分辨率
+VNC_GEOMETRY="1920x1080"
 VNC_DEPTH="24"
 NOVNC_PORT="6080"
 
@@ -28,10 +28,6 @@ tigervncserver -kill $VNC_DISPLAY 2>/dev/null || true
 
 # 等待进程完全停止
 sleep 3
-
-
-cp ./xstartup.sh  ~/.vnc/xstartup
-chmod +x ~/.vnc/xstartup
 
 echo "启动VNC服务器，分辨率: $VNC_GEOMETRY"
 # 启动VNC服务器，强制指定分辨率
