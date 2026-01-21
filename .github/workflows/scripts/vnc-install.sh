@@ -217,32 +217,27 @@ select_resolution() {
     print_success "Resolution set to: $VNC_GEOMETRY"
 }
 
-# Main installation process
-main() {
-    print_header
-    check_root
-    detect_distro
+print_header
+check_root
+detect_distro
 
-    if [[ "$DISTRO" != "ubuntu" && "$DISTRO" != "debian" ]]; then
-        print_error "This script only supports Ubuntu and Debian systems"
-        exit 1
-    fi
+if [[ "$DISTRO" != "ubuntu" && "$DISTRO" != "debian" ]]; then
+    print_error "This script only supports Ubuntu and Debian systems"
+    exit 1
+fi
 
-    print_info "Detected distribution: $DISTRO $DISTRO_VERSION"
+print_info "Detected distribution: $DISTRO $DISTRO_VERSION"
 
-    # Only ask for resolution if not set via environment or if it's the default
-    if [[ -z "${VNC_GEOMETRY:-}" || "${VNC_GEOMETRY}" == "2560x1440" ]]; then
+# Only ask for resolution if not set via environment or if it's the default
+if [[ -z "${VNC_GEOMETRY:-}" || "${VNC_GEOMETRY}" == "2560x1440" ]]; then
 #        select_resolution
-        VNC_GEOMETRY="1920x1080"
-    else
-        print_info "Using configured resolution: $VNC_GEOMETRY"
-    fi
+    VNC_GEOMETRY="1920x1080"
+else
+    print_info "Using configured resolution: $VNC_GEOMETRY"
+fi
 
-    install_packages
-    setup_vnc_password
-    create_startup_scripts
-    start_services
-    show_connection_info
-}
-
-main
+install_packages
+setup_vnc_password
+create_startup_scripts
+start_services
+show_connection_info
