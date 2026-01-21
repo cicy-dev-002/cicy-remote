@@ -276,17 +276,17 @@ main() {
     fi
 
     # Check if already installed
-    if command -v tigervncserver &> /dev/null && command -v websockify &> /dev/null; then
-        print_info "VNC and noVNC are already installed"
-        print_info "Would you like to reinstall? (y/N)"
-        read -r response
-        if [[ ! "$response" =~ ^[Yy]$ ]]; then
-            print_info "Starting existing services..."
-            start_services
-            show_connection_info
-            exit 0
-        fi
-    fi
+#    if command -v tigervncserver &> /dev/null && command -v websockify &> /dev/null; then
+#        print_info "VNC and noVNC are already installed"
+#        print_info "Would you like to reinstall? (y/N)"
+#        read -r response
+#        if [[ ! "$response" =~ ^[Yy]$ ]]; then
+#            print_info "Starting existing services..."
+#            start_services
+#            show_connection_info
+#            exit 0
+#        fi
+#    fi
 
     install_packages
     setup_vnc_password
