@@ -1,4 +1,7 @@
 while true; do
+  if [ ! -f /tmp/running ]; then
+    break
+  fi
   echo "======================================================"
   ps aux | grep electron
   ps aux | grep jupyter
