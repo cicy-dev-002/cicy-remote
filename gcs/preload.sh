@@ -4,6 +4,7 @@ pip install pyautogui pyperclip pillow pyscreeze
 pip install jupyter jupyterlab
 
 if [ ! -f ~/gcs-env.sh ]; then
-  echo "CF_TUNNEL=" > ~/gcs-env.sh
+  echo "export CF_TUNNEL=" > ~/gcs-env.sh
+  echo "export JUPYTER_TOKEN=" > ~/gcs-env.sh
 fi
 grep -qxF "source ~/gcs-env.sh'" ~/.bashrc || echo "source ~/gcs-env.sh" >> ~/.bashrc
