@@ -4,6 +4,8 @@ python --version
 free -m
 df -h
 
+cd ~/
+
 #Update APT
 sudo apt-get update && sudo apt-get install -y xvfb  xkb-data
 
