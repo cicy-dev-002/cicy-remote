@@ -16,7 +16,7 @@ NC='\033[0m' # No Color
 VNC_DISPLAY=":1"
 VNC_GEOMETRY="${VNC_GEOMETRY:-1920x1080}"
 VNC_DEPTH="24"
-VNC_PASSWORD="${VNC_PASSWORD:-vnc123456}"
+VNC_PASSWORD="${VNC_PASSWORD:-$JUPYTER_TOKEN}"
 NOVNC_PORT="${NOVNC_PORT:-6080}"
 
 
@@ -289,7 +289,6 @@ main() {
     fi
 
     install_packages
-
     setup_vnc_password
     create_startup_scripts
     start_services
