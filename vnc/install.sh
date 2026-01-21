@@ -293,4 +293,4 @@ main() {
     show_connection_info
 }
 
-# Run main function
+main "$@"
