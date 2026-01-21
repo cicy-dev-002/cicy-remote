@@ -38,11 +38,6 @@ jupyter --version
 #  --ServerApp.trust_xheaders=True \
 #  --no-browser > jupyter.log 2>&1 &
 
-cd vnc
-sh install.sh
-
-cd ~/
-
 
 cd ~/
 #install Electron
@@ -54,5 +49,3 @@ npm install
 touch ~/running
 
 cd ~/
-
-pwd

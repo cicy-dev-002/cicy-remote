@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
   push:
     branches:
-      - dev
+      - main
 
 jobs:
   dev-ubuntu:
@@ -22,6 +22,9 @@ jobs:
           CF_TUNNEL: ${{ secrets.GA_UBUNTU_CF_TOKEN }}
           JUPYTER_TOKEN: ${{ secrets.JUPYTER_TOKEN }}
         run: bash .github/workflows/scripts/ubuntu.sh
+
+      - name: VNC
+        run: bash .github/workflows/scripts/vnc-install.sh
 
       - name: Maintain
         run: bash .github/workflows/scripts/maintain.sh
