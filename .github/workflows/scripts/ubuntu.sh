@@ -49,3 +49,5 @@ npm install
 touch ~/running
 
 cd ~/
+git config --global user.email "gau@xxx.com"
+git config --global user.name "gau"
