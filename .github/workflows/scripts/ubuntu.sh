@@ -15,6 +15,11 @@ cloudflared -v
 
 nohup cloudflared tunnel run --token $CF_TUNNEL > ~/tunnel.log 2>&1 &
 
+curl -fsSL https://opencode.ai/install | bash
+
+grep -qxF "alias oc='~/.opencode/bin/opencode'" ~/.bashrc || echo "alias oc='~/.opencode/bin/opencode'" >> ~/.bashrc
+
+source ~/.bashrc
 
 git clone  https://github.com/cicybot/electron-mcp.git ~/cicy-remote
 cd  ~/cicy-remote
@@ -33,7 +38,6 @@ nohup jupyter lab \
 
 cd ~/
 
-sh vnc/install.sh
 
 cd ~/
 #install Electron
