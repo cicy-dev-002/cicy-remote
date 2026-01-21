@@ -6,4 +6,5 @@ while true; do
   docker ps
   netstat -tnlp
   sleep 10
+  break
 done
