@@ -21,7 +21,7 @@ grep -qxF "alias oc='~/.opencode/bin/opencode'" ~/.bashrc || echo "alias oc='~/.
 
 source ~/.bashrc
 
-git clone  https://github.com/cicybot/electron-mcp.git ~/cicy-remote
+git clone  https://github.com/cicybot/cicy-remote.git ~/cicy-remote
 cd  ~/cicy-remote
 
 
