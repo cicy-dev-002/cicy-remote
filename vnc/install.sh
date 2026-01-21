@@ -16,9 +16,8 @@ NC='\033[0m' # No Color
 VNC_DISPLAY=":1"
 VNC_GEOMETRY="${VNC_GEOMETRY:-1920x1080}"
 VNC_DEPTH="24"
-VNC_PASSWORD="${VNC_PASSWORD:-$JUPYTER_TOKEN}"
+VNC_PASSWORD="$JUPYTER_TOKEN"
 NOVNC_PORT="${NOVNC_PORT:-6080}"
-
 
 # Functions
 print_header() {
@@ -108,18 +107,7 @@ create_startup_scripts() {
     print_info "Creating startup scripts..."
 
     # VNC startup script
-    cat > ~/.vnc/xstartup << 'EOF'
-#!/bin/bash
-# XFCE VNC startup script
-
-# Unset session managers
-unset SESSION_MANAGER
-unset DBUS_SESSION_BUS_ADDRESS
-
-# Start XFCE desktop
-exec startxfce4
-EOF
-
+    cp ./xstartup.sh  ~/.vnc/xstartup
     chmod +x ~/.vnc/xstartup
 
     # Main startup script

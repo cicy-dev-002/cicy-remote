@@ -29,18 +29,8 @@ tigervncserver -kill $VNC_DISPLAY 2>/dev/null || true
 # 等待进程完全停止
 sleep 3
 
-# 确保xstartup文件正确
-cat > ~/.vnc/xstartup << 'EOF'
-#!/bin/bash
-# XFCE VNC startup script - 固定2K分辨率
 
-# 清除会话管理器
-unset SESSION_MANAGER
-unset DBUS_SESSION_BUS_ADDRESS
-
-# 启动XFCE桌面
-exec startxfce4
-EOF
+cp ./xstartup.sh  ~/.vnc/xstartup
 chmod +x ~/.vnc/xstartup
 
 echo "启动VNC服务器，分辨率: $VNC_GEOMETRY"
@@ -92,4 +82,3 @@ echo -e "${BLUE}📺 分辨率确认:${NC}"
 echo -e "   设置: ${YELLOW}$VNC_GEOMETRY${NC}"
 echo -e "   实际: ${YELLOW}$ACTUAL_GEOMETRY${NC}"
 echo ""
-limeng9088@cloudshell:~$ 
