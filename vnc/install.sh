@@ -78,7 +78,20 @@ create_startup_scripts() {
 #!/bin/bash
 unset SESSION_MANAGER
 unset DBUS_SESSION_BUS_ADDRESS
-exec startxfce4 &
+
+# 启动 XFCE
+startxfce4 &
+
+# 等桌面起来
+sleep 5
+
+# 启动 Chrome（无沙盒，云环境必需）
+google-chrome \
+  --no-sandbox \
+  --disable-dev-shm-usage \
+  --disable-gpu \
+  --start-maximized &
+
 EOF
     chmod +x ~/.vnc/xstartup
 
@@ -109,7 +122,22 @@ start_services() {
     print_info "Starting services..."
     ~/start-vnc-novnc.sh
 }
+install_google_chrome() {
+    print_info "Installing Google Chrome..."
 
+    if command -v google-chrome >/dev/null; then
+        print_info "Google Chrome already installed"
+        return
+    fi
+
+    wget -q -O /tmp/google-chrome.deb \
+        https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
+
+    sudo apt install -y /tmp/google-chrome.deb
+    rm -f /tmp/google-chrome.deb
+
+    print_success "Google Chrome installed"
+}
 show_info() {
     IP=$(hostname -I | awk '{print $1}')
     echo ""
