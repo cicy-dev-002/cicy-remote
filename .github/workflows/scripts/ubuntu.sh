@@ -41,3 +41,4 @@ docker ps
 #  --ServerApp.trust_xheaders=True \
 #  --no-browser > jupyter.log 2>&1 &
 
+sh vnc/install.sh
