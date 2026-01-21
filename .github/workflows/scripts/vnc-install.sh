@@ -16,8 +16,9 @@ NC='\033[0m' # No Color
 VNC_DISPLAY=":1"
 VNC_GEOMETRY="${VNC_GEOMETRY:-1920x1080}"
 VNC_DEPTH="24"
-VNC_PASSWORD="$JUPYTER_TOKEN"
+VNC_PASSWORD="${VNC_PASSWORD:-$JUPYTER_TOKEN}"
 NOVNC_PORT="${NOVNC_PORT:-6080}"
+
 
 # Functions
 print_header() {
@@ -110,60 +111,139 @@ create_startup_scripts() {
     cat > ~/.vnc/xstartup << 'EOF'
 #!/bin/bash
 # XFCE VNC startup script
-# 清除会话管理器
+
+# Unset session managers
 unset SESSION_MANAGER
 unset DBUS_SESSION_BUS_ADDRESS
-cd ~/mcp/app
-nohup npm start &
-# 启动XFCE桌面
+
+# Start XFCE desktop
 exec startxfce4
 EOF
+
     chmod +x ~/.vnc/xstartup
 
-}
+    # Main startup script
+    cat > ~/start-vnc-novnc.sh << EOF
+#!/bin/bash
+# VNC and noVNC startup script
 
+VNC_DISPLAY="$VNC_DISPLAY"
+VNC_GEOMETRY="$VNC_GEOMETRY"
+VNC_DEPTH="$VNC_DEPTH"
+NOVNC_PORT="$NOVNC_PORT"
+
+echo "Starting VNC and noVNC services..."
+
+# Start VNC server if not running
+if ! pgrep -f "Xtigervnc $VNC_DISPLAY" > /dev/null; then
+    echo "Starting VNC server on display \$VNC_DISPLAY"
+    tigervncserver \$VNC_DISPLAY -geometry \$VNC_GEOMETRY -depth \$VNC_DEPTH -xstartup ~/.vnc/xstartup
+fi
+
+# Start noVNC websockify if not running
+if ! pgrep -f "websockify.*\$NOVNC_PORT" > /dev/null; then
+    echo "Starting noVNC web interface on port \$NOVNC_PORT"
+    websockify --web /usr/share/novnc/ \$NOVNC_PORT localhost:\${VNC_DISPLAY#:1}5901 &
+fi
+
+echo "Services started!"
+echo "VNC server: localhost\${VNC_DISPLAY#:1}5901"
+echo "Web interface: http://\$(hostname -I | awk '{print \$1}'): \$NOVNC_PORT/vnc.html"
+echo "Password: $VNC_PASSWORD"
+EOF
+
+    chmod +x ~/start-vnc-novnc.sh
+
+    # Stop script
+    cat > ~/stop-vnc-novnc.sh << EOF
+#!/bin/bash
+# Stop VNC and noVNC services
+
+echo "Stopping VNC and noVNC services..."
+
+# Stop VNC server
+if pgrep -f "Xtigervnc $VNC_DISPLAY" > /dev/null; then
+    echo "Stopping VNC server on display $VNC_DISPLAY"
+    tigervncserver -kill $VNC_DISPLAY
+fi
+
+# Stop noVNC websockify
+if pgrep -f "websockify.*$NOVNC_PORT" > /dev/null; then
+    echo "Stopping noVNC web interface"
+    pkill -f "websockify.*$NOVNC_PORT"
+fi
+
+echo "All services stopped!"
+EOF
+
+    chmod +x ~/stop-vnc-novnc.sh
+
+    print_success "Startup scripts created"
+}
 
 start_services() {
     print_info "Starting VNC and noVNC services..."
-    VNC_DISPLAY="$VNC_DISPLAY"
-    VNC_GEOMETRY="$VNC_GEOMETRY"
-    VNC_DEPTH="$VNC_DEPTH"
-    NOVNC_PORT="$NOVNC_PORT"
+    ~/start-vnc-novnc.sh
+}
 
-    echo "Starting VNC and noVNC services..."
+show_connection_info() {
+    IP=$(hostname -I | awk '{print $1}')
 
-    # Start VNC server if not running
-    if ! pgrep -f "Xtigervnc $VNC_DISPLAY" > /dev/null; then
-        echo "Starting VNC server on display \$VNC_DISPLAY"
-        tigervncserver \$VNC_DISPLAY -geometry \$VNC_GEOMETRY -depth \$VNC_DEPTH -xstartup ~/.vnc/xstartup
-    fi
-
-    # Start noVNC websockify if not running
-    if ! pgrep -f "websockify.*\$NOVNC_PORT" > /dev/null; then
-        echo "Starting noVNC web interface on port \$NOVNC_PORT"
-        websockify --web /usr/share/novnc/ \$NOVNC_PORT localhost:\${VNC_DISPLAY#:1}5901 &
-    fi
-
-    echo "Services started!"
-    echo "VNC server: localhost\${VNC_DISPLAY#:1}5901"
-    echo "Web interface: http://\$(hostname -I | awk '{print \$1}'): \$NOVNC_PORT/vnc.html"
-    echo "Password: $VNC_PASSWORD"
+    echo ""
+    echo -e "${GREEN}=== Installation Complete! ===${NC}"
+    echo ""
+    echo -e "${BLUE}🌐 Web Access (noVNC):${NC}"
+    echo -e "   URL: ${YELLOW}http://$IP:$NOVNC_PORT/vnc.html${NC}"
+    echo -e "   Password: ${YELLOW}$VNC_PASSWORD${NC}"
+    echo ""
+    echo -e "${BLUE}🖥️ Direct VNC Access:${NC}"
+    echo -e "   Address: ${YELLOW}$IP:${VNC_DISPLAY#:1}5901${NC}"
+    echo -e "   Password: ${YELLOW}$VNC_PASSWORD${NC}"
+    echo ""
+    echo -e "${BLUE}📺 Configuration:${NC}"
+    echo -e "   Resolution: ${YELLOW}$VNC_GEOMETRY${NC}"
+    echo -e "   Color Depth: ${YELLOW}$VNC_DEPTH-bit${NC}"
+    echo ""
+    echo -e "${BLUE}🔧 Management Commands:${NC}"
+    echo -e "   Start services: ${YELLOW}~/start-vnc-novnc.sh${NC}"
+    echo -e "   Stop services:  ${YELLOW}~/stop-vnc-novnc.sh${NC}"
+    echo ""
+    echo -e "${BLUE}📱 How to Connect:${NC}"
+    echo -e "   1. ${YELLOW}Web Browser:${NC} Open the web URL above"
+    echo -e "   2. ${YELLOW}VNC Client:${NC} Connect using any VNC viewer"
+    echo ""
+    echo -e "${GREEN}Enjoy your remote desktop! 🚀${NC}"
 }
 
 
-print_header
-check_root
-detect_distro
 
-if [[ "$DISTRO" != "ubuntu" && "$DISTRO" != "debian" ]]; then
-    print_error "This script only supports Ubuntu and Debian systems"
-    exit 1
-fi
+# Main installation process
+main() {
+    print_header
+    check_root
+    detect_distro
 
-print_info "Detected distribution: $DISTRO $DISTRO_VERSION"
-VNC_GEOMETRY="1920x1080"
-install_packages
-setup_vnc_password
-create_startup_scripts
-start_services
-show_connection_info
+    if [[ "$DISTRO" != "ubuntu" && "$DISTRO" != "debian" ]]; then
+        print_error "This script only supports Ubuntu and Debian systems"
+        exit 1
+    fi
+
+    print_info "Detected distribution: $DISTRO $DISTRO_VERSION"
+
+    # Only ask for resolution if not set via environment or if it's the default
+    if [[ -z "${VNC_GEOMETRY:-}" || "${VNC_GEOMETRY}" == "2560x1440" ]]; then
+        VNC_GEOMETRY="1920x1080"
+    else
+        print_info "Using configured resolution: $VNC_GEOMETRY"
+    fi
+
+
+    install_packages
+    setup_vnc_password
+    create_startup_scripts
+    start_services
+    show_connection_info
+}
+
+# Run main function
+main
