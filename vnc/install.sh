@@ -14,27 +14,12 @@ NC='\033[0m' # No Color
 
 # Configuration
 VNC_DISPLAY=":1"
-VNC_GEOMETRY="${VNC_GEOMETRY:-2560x1440}"
+VNC_GEOMETRY="${VNC_GEOMETRY:-1920x1080}"
 VNC_DEPTH="24"
 VNC_PASSWORD="${VNC_PASSWORD:-vnc123456}"
 NOVNC_PORT="${NOVNC_PORT:-6080}"
 
-install_google_chrome() {
-    print_info "Installing Google Chrome..."
 
-    if command -v google-chrome >/dev/null; then
-        print_info "Google Chrome already installed"
-        return
-    fi
-
-    wget -q -O /tmp/chrome.deb \
-        https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
-
-    sudo apt install -y /tmp/chrome.deb
-    rm -f /tmp/chrome.deb
-
-    print_success "Google Chrome installed"
-}
 # Functions
 print_header() {
     echo -e "${BLUE}"
@@ -304,7 +289,7 @@ main() {
     fi
 
     install_packages
-    install_google_chrome
+
     setup_vnc_password
     create_startup_scripts
     start_services
