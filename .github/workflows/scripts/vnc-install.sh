@@ -120,32 +120,6 @@ exec startxfce4
     EOF
     chmod +x ~/.vnc/xstartup
 
-
-    # Stop script
-    cat > ~/stop-vnc-novnc.sh << EOF
-#!/bin/bash
-# Stop VNC and noVNC services
-
-echo "Stopping VNC and noVNC services..."
-
-# Stop VNC server
-if pgrep -f "Xtigervnc $VNC_DISPLAY" > /dev/null; then
-    echo "Stopping VNC server on display $VNC_DISPLAY"
-    tigervncserver -kill $VNC_DISPLAY
-fi
-
-# Stop noVNC websockify
-if pgrep -f "websockify.*$NOVNC_PORT" > /dev/null; then
-    echo "Stopping noVNC web interface"
-    pkill -f "websockify.*$NOVNC_PORT"
-fi
-
-echo "All services stopped!"
-EOF
-
-    chmod +x ~/stop-vnc-novnc.sh
-
-    print_success "Startup scripts created"
 }
 
 start_services() {
@@ -264,19 +238,6 @@ main() {
         print_info "Using configured resolution: $VNC_GEOMETRY"
     fi
 
-    # Check if already installed
-#    if command -v tigervncserver &> /dev/null && command -v websockify &> /dev/null; then
-#        print_info "VNC and noVNC are already installed"
-#        print_info "Would you like to reinstall? (y/N)"
-#        read -r response
-#        if [[ ! "$response" =~ ^[Yy]$ ]]; then
-#            print_info "Starting existing services..."
-#            start_services
-#            show_connection_info
-#            exit 0
-#        fi
-#    fi
-
     install_packages
     setup_vnc_password
     create_startup_scripts
@@ -284,5 +245,4 @@ main() {
     show_connection_info
 }
 
-# Run main function
 main
