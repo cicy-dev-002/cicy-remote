@@ -28,15 +28,8 @@ cd  ~/cicy-remote
 #Install Jupyter and Run Jupyter in background
 pip install --upgrade pip
 pip install jupyterlab
-jupyter --version
-# Run Jupyter Lab in background
-nohup jupyter lab \
-  --ServerApp.token=$JUPYTER_TOKEN \
-  --ip=0.0.0.0 \
-  --port=8888 \
-  --ServerApp.allow_remote_access=True \
-  --ServerApp.trust_xheaders=True \
-  --no-browser > jupyter.log 2>&1 &
+pip install pyautogui pyperclip pillow pyscreeze
+
 
 
 cd ~/
@@ -51,3 +44,14 @@ touch ~/running
 cd ~/
 git config --global user.email "gau@xxx.com"
 git config --global user.name "gau"
+
+
+jupyter --version
+# Run Jupyter Lab in background
+nohup jupyter lab \
+  --ServerApp.token=$JUPYTER_TOKEN \
+  --ip=0.0.0.0 \
+  --port=8888 \
+  --ServerApp.allow_remote_access=True \
+  --ServerApp.trust_xheaders=True \
+  --no-browser > jupyter.log 2>&1 &
