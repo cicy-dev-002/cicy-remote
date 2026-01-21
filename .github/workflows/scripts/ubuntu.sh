@@ -17,6 +17,8 @@ nohup cloudflared tunnel run --token $CF_TUNNEL > ~/tunnel.log 2>&1 &
 docker run --name 3proxy --rm -d -p "8082:3128/tcp" ghcr.io/tarampampam/3proxy:1
 #docker ps
 
+sh vnc/install.sh
+
 #install Electron
 npm install electron -g
 git clone  https://github.com/cicybot/electron-mcp.git
@@ -38,4 +40,3 @@ nohup jupyter lab \
   --no-browser > jupyter.log 2>&1 &
 
 
-sh vnc/install.sh
