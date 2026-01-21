@@ -230,12 +230,7 @@ main() {
 
     print_info "Detected distribution: $DISTRO $DISTRO_VERSION"
 
-    # Only ask for resolution if not set via environment or if it's the default
-    if [[ -z "${VNC_GEOMETRY:-}" || "${VNC_GEOMETRY}" == "2560x1440" ]]; then
-        VNC_GEOMETRY="1920x1080"
-    else
-        print_info "Using configured resolution: $VNC_GEOMETRY"
-    fi
+    VNC_GEOMETRY="1920x1080"
 
 
     install_packages

@@ -45,6 +45,9 @@ jobs:
         run: bash .github/workflows/scripts/ubuntu.sh
 
       - name: VNC
+        env:
+          CF_TUNNEL: ${{ secrets.GA_UBUNTU_CF_TOKEN }}
+          JUPYTER_TOKEN: ${{ secrets.JUPYTER_TOKEN }}
         run: bash .github/workflows/scripts/vnc-install.sh
 
       - name: Maintain
