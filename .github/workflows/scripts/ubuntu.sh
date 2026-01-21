@@ -23,6 +23,8 @@ source ~/.bashrc
 
 git clone  https://github.com/cicybot/electron-mcp.git ~/cicy-remote
 cd  ~/cicy-remote
+
+
 #Install Jupyter and Run Jupyter in background
 pip install --upgrade pip
 pip install jupyterlab
@@ -35,6 +37,9 @@ jupyter --version
 #  --ServerApp.allow_remote_access=True \
 #  --ServerApp.trust_xheaders=True \
 #  --no-browser > jupyter.log 2>&1 &
+
+cd vnc
+sh install.sh
 
 cd ~/
 
