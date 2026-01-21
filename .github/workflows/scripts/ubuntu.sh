@@ -15,6 +15,9 @@ cloudflared -v
 
 nohup cloudflared tunnel run --token $CF_TUNNEL > ~/tunnel.log 2>&1 &
 
+
+git clone  https://github.com/cicybot/electron-mcp.git ~/cicy-remote
+cd  ~/cicy-remote
 #Install Jupyter and Run Jupyter in background
 pip install --upgrade pip
 pip install jupyterlab
@@ -28,12 +31,15 @@ nohup jupyter lab \
   --ServerApp.trust_xheaders=True \
   --no-browser > jupyter.log 2>&1 &
 
+cd ~/
+
 sh vnc/install.sh
 
+cd ~/
 #install Electron
 npm install electron -g
-git clone  https://github.com/cicybot/electron-mcp.git
-cd electron-mcp/app
+git clone https://github.com/cicybot/electron-mcp.git ~/mcp
+cd ~/mcp/app
 npm install
 
 touch ~/running
