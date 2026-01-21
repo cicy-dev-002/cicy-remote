@@ -17,6 +17,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+
       - name: Get npm cache directory
         id: npm-cache-dir
         shell: pwsh
@@ -29,6 +30,22 @@ jobs:
           key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
           restore-keys: |
             ${{ runner.os }}-node-
+#
+
+      - name: Restore Electron data cache
+        id: electron-data-cache
+        uses: actions/cache@v4
+        with:
+          path: ~/.config/Electron
+          key: Electron-data-linux
+
+      - name: Restore Electron mcp data cache
+        id: electron-mcp-data-cache
+        uses: actions/cache@v4
+        with:
+          path: ~/electron-mcp
+          key: Electron-mcp-data
+
       - name: Restore pip cache
         id: cache-pip
         uses: actions/cache@v4
