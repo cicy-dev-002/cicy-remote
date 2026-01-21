@@ -12,4 +12,3 @@ grep -qxF "alias oc='~/.opencode/bin/opencode'" ~/.bashrc || echo "alias oc='~/.
 
 source ~/.bashrc
 
-du -h --max-depth=2 /home 2>/dev/null | sort -hr | head -n 20
