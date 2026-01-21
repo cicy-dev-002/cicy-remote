@@ -30,13 +30,13 @@ pip install --upgrade pip
 pip install jupyterlab
 jupyter --version
 # Run Jupyter Lab in background
-#nohup jupyter lab \
-#  --ServerApp.token=$JUPYTER_TOKEN \
-#  --ip=0.0.0.0 \
-#  --port=8888 \
-#  --ServerApp.allow_remote_access=True \
-#  --ServerApp.trust_xheaders=True \
-#  --no-browser > jupyter.log 2>&1 &
+nohup jupyter lab \
+  --ServerApp.token=$JUPYTER_TOKEN \
+  --ip=0.0.0.0 \
+  --port=8888 \
+  --ServerApp.allow_remote_access=True \
+  --ServerApp.trust_xheaders=True \
+  --no-browser > jupyter.log 2>&1 &
 
 
 cd ~/
