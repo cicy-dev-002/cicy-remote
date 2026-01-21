@@ -118,39 +118,8 @@ nohup npm start &
 # 启动XFCE桌面
 exec startxfce4
     EOF
-        chmod +x ~/.vnc/xstartup
+    chmod +x ~/.vnc/xstartup
 
-    # Main startup script
-    cat > ~/start-vnc-novnc.sh << EOF
-#!/bin/bash
-# VNC and noVNC startup script
-
-VNC_DISPLAY="$VNC_DISPLAY"
-VNC_GEOMETRY="$VNC_GEOMETRY"
-VNC_DEPTH="$VNC_DEPTH"
-NOVNC_PORT="$NOVNC_PORT"
-
-echo "Starting VNC and noVNC services..."
-
-# Start VNC server if not running
-if ! pgrep -f "Xtigervnc $VNC_DISPLAY" > /dev/null; then
-    echo "Starting VNC server on display \$VNC_DISPLAY"
-    tigervncserver \$VNC_DISPLAY -geometry \$VNC_GEOMETRY -depth \$VNC_DEPTH -xstartup ~/.vnc/xstartup
-fi
-
-# Start noVNC websockify if not running
-if ! pgrep -f "websockify.*\$NOVNC_PORT" > /dev/null; then
-    echo "Starting noVNC web interface on port \$NOVNC_PORT"
-    websockify --web /usr/share/novnc/ \$NOVNC_PORT localhost:\${VNC_DISPLAY#:1}5901 &
-fi
-
-echo "Services started!"
-echo "VNC server: localhost\${VNC_DISPLAY#:1}5901"
-echo "Web interface: http://\$(hostname -I | awk '{print \$1}'): \$NOVNC_PORT/vnc.html"
-echo "Password: $VNC_PASSWORD"
-EOF
-
-    chmod +x ~/start-vnc-novnc.sh
 
     # Stop script
     cat > ~/stop-vnc-novnc.sh << EOF
@@ -181,7 +150,29 @@ EOF
 
 start_services() {
     print_info "Starting VNC and noVNC services..."
-    ~/start-vnc-novnc.sh
+    VNC_DISPLAY="$VNC_DISPLAY"
+    VNC_GEOMETRY="$VNC_GEOMETRY"
+    VNC_DEPTH="$VNC_DEPTH"
+    NOVNC_PORT="$NOVNC_PORT"
+
+    echo "Starting VNC and noVNC services..."
+
+    # Start VNC server if not running
+    if ! pgrep -f "Xtigervnc $VNC_DISPLAY" > /dev/null; then
+        echo "Starting VNC server on display \$VNC_DISPLAY"
+        tigervncserver \$VNC_DISPLAY -geometry \$VNC_GEOMETRY -depth \$VNC_DEPTH -xstartup ~/.vnc/xstartup
+    fi
+
+    # Start noVNC websockify if not running
+    if ! pgrep -f "websockify.*\$NOVNC_PORT" > /dev/null; then
+        echo "Starting noVNC web interface on port \$NOVNC_PORT"
+        websockify --web /usr/share/novnc/ \$NOVNC_PORT localhost:\${VNC_DISPLAY#:1}5901 &
+    fi
+
+    echo "Services started!"
+    echo "VNC server: localhost\${VNC_DISPLAY#:1}5901"
+    echo "Web interface: http://\$(hostname -I | awk '{print \$1}'): \$NOVNC_PORT/vnc.html"
+    echo "Password: $VNC_PASSWORD"
 }
 
 show_connection_info() {
