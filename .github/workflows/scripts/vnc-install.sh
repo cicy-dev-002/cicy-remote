@@ -117,10 +117,11 @@ cd ~/mcp/app
 nohup npm start &
 # 启动XFCE桌面
 exec startxfce4
-    EOF
+EOF
     chmod +x ~/.vnc/xstartup
 
 }
+
 
 start_services() {
     print_info "Starting VNC and noVNC services..."
@@ -149,73 +150,6 @@ start_services() {
     echo "Password: $VNC_PASSWORD"
 }
 
-show_connection_info() {
-    IP=$(hostname -I | awk '{print $1}')
-
-    echo ""
-    echo -e "${GREEN}=== Installation Complete! ===${NC}"
-    echo ""
-    echo -e "${BLUE}🌐 Web Access (noVNC):${NC}"
-    echo -e "   URL: ${YELLOW}http://$IP:$NOVNC_PORT/vnc.html${NC}"
-    echo -e "   Password: ${YELLOW}$VNC_PASSWORD${NC}"
-    echo ""
-    echo -e "${BLUE}🖥️ Direct VNC Access:${NC}"
-    echo -e "   Address: ${YELLOW}$IP:${VNC_DISPLAY#:1}5901${NC}"
-    echo -e "   Password: ${YELLOW}$VNC_PASSWORD${NC}"
-    echo ""
-    echo -e "${BLUE}📺 Configuration:${NC}"
-    echo -e "   Resolution: ${YELLOW}$VNC_GEOMETRY${NC}"
-    echo -e "   Color Depth: ${YELLOW}$VNC_DEPTH-bit${NC}"
-    echo ""
-    echo -e "${BLUE}🔧 Management Commands:${NC}"
-    echo -e "   Start services: ${YELLOW}~/start-vnc-novnc.sh${NC}"
-    echo -e "   Stop services:  ${YELLOW}~/stop-vnc-novnc.sh${NC}"
-    echo ""
-    echo -e "${BLUE}📱 How to Connect:${NC}"
-    echo -e "   1. ${YELLOW}Web Browser:${NC} Open the web URL above"
-    echo -e "   2. ${YELLOW}VNC Client:${NC} Connect using any VNC viewer"
-    echo ""
-    echo -e "${GREEN}Enjoy your remote desktop! 🚀${NC}"
-}
-
-select_resolution() {
-    echo ""
-    echo -e "${BLUE}📺 Select VNC Resolution:${NC}"
-    echo "1) 2560x1440  (2K/QHD - Recommended)"
-    echo "2) 1920x1080  (Full HD)"
-    echo "3) 3840x2160  (4K/UHD)"
-    echo "4) 1366x768   (HD)"
-    echo "5) 1280x720   (HD Ready)"
-    echo "6) 1600x900   (HD+)"
-    echo "7) 1024x768   (XGA)"
-    echo "8) Custom resolution"
-    echo ""
-    read -p "Choose resolution [1-8]: " choice
-
-    case $choice in
-        1) VNC_GEOMETRY="2560x1440" ;;
-        2) VNC_GEOMETRY="1920x1080" ;;
-        3) VNC_GEOMETRY="3840x2160" ;;
-        4) VNC_GEOMETRY="1366x768" ;;
-        5) VNC_GEOMETRY="1280x720" ;;
-        6) VNC_GEOMETRY="1600x900" ;;
-        7) VNC_GEOMETRY="1024x768" ;;
-        8)
-            read -p "Enter custom resolution (e.g., 1280x1024): " custom_res
-            if [[ "$custom_res" =~ ^[0-9]+x[0-9]+$ ]]; then
-                VNC_GEOMETRY="$custom_res"
-            else
-                print_error "Invalid resolution format. Using default 2560x1440."
-                VNC_GEOMETRY="2560x1440"
-            fi
-            ;;
-        *)
-            print_info "Invalid choice. Using default 2560x1440."
-            VNC_GEOMETRY="2560x1440" ;;
-    esac
-
-    print_success "Resolution set to: $VNC_GEOMETRY"
-}
 
 print_header
 check_root
@@ -227,15 +161,7 @@ if [[ "$DISTRO" != "ubuntu" && "$DISTRO" != "debian" ]]; then
 fi
 
 print_info "Detected distribution: $DISTRO $DISTRO_VERSION"
-
-# Only ask for resolution if not set via environment or if it's the default
-if [[ -z "${VNC_GEOMETRY:-}" || "${VNC_GEOMETRY}" == "2560x1440" ]]; then
-#        select_resolution
-    VNC_GEOMETRY="1920x1080"
-else
-    print_info "Using configured resolution: $VNC_GEOMETRY"
-fi
-
+VNC_GEOMETRY="1920x1080"
 install_packages
 setup_vnc_password
 create_startup_scripts
