@@ -13,19 +13,6 @@ cloudflared -v
 
 nohup cloudflared tunnel run --token $CF_TUNNEL > ~/tunnel.log 2>&1 &
 
-#Docker 3proxy Proxy
-docker run --name 3proxy --rm -d -p "8082:3128/tcp" ghcr.io/tarampampam/3proxy:1
-#docker ps
-
-sh vnc/install.sh
-
-#install Electron
-npm install electron -g
-git clone  https://github.com/cicybot/electron-mcp.git
-cd electron-mcp/app
- npm install
- nohup npm start &
-
 #Install Jupyter and Run Jupyter in background
 pip install --upgrade pip
 pip install jupyterlab
@@ -39,4 +26,10 @@ nohup jupyter lab \
   --ServerApp.trust_xheaders=True \
   --no-browser > jupyter.log 2>&1 &
 
+sh vnc/install.sh
 
+#install Electron
+npm install electron -g
+git clone  https://github.com/cicybot/electron-mcp.git
+cd electron-mcp/app
+npm install
