@@ -1,5 +1,5 @@
 while true; do
-  if [ ! -f /tmp/running ]; then
+  if [ ! -f ~/running ]; then
     break
   fi
   echo "======================================================"

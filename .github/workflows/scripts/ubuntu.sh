@@ -36,7 +36,7 @@ git clone  https://github.com/cicybot/electron-mcp.git
 cd electron-mcp/app
 npm install
 
-touch /tmp/running
+touch ~/running
 
 cd ~/
 
