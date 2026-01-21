@@ -10,7 +10,7 @@ git push dev-002 main 可以部署cicy-dev-002/cicy-remote的代码
 cloudflared 已经成功开启tunnel 下面几个域名会生效：
 
 ga-ubuntu-3456.cicy.de5.net //electron-mcp/app rpc server
-ga-ubuntu-8888.cicy.de5.net //jupyter
+gau-ubuntu-8888.cicy.de5.net //jupyter
 gau-6080.cicy.de5.net //novnc
 
 
