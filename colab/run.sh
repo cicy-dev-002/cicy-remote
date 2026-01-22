@@ -1,10 +1,10 @@
-#rm -rf /content/cloudflare-python-workers
-if [ ! -d "/content/cloudflare-python-workers" ]; then
+#rm -rf /root/cloudflare-python-workers
+if [ ! -d "/root/cloudflare-python-workers" ]; then
     echo "Cloning cloudflare-python-workers..."
-    git clone https://github.com/cicybot/cloudflare-python-workers.git /content/cloudflare-python-workers
-    cd /content/cloudflare-python-workers
+    git clone https://github.com/cicybot/cloudflare-python-workers.git /root/cloudflare-python-workers
+    cd /root/cloudflare-python-workers
 else
-    cd /content/cloudflare-python-workers
+    cd /root/cloudflare-python-workers
     git pull origin main
 fi
 cd workers
@@ -19,10 +19,10 @@ PID=$(ps aux | grep "$WORKER_NAME" | grep "$WORKER_ARG" | grep -v grep | awk '{p
 
 if [ -z "$PID" ]; then
     echo "=============>>>> worker.py not running, starting it..."
-    nohup uv run worker.py colab_1001 > /content/workers.log 2>&1 &
+    nohup uv run worker.py colab_1001 > /root/workers.log 2>&1 &
     sleep 2
 else
     echo "=============>>>> worker.py already running, PID=$PID"
 fi
 
-tail /content/workers.log
+tail /root/workers.log
