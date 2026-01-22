@@ -1,6 +1,12 @@
-sudo apt update
+export DEBIAN_FRONTEND=noninteractive
+export DEBCONF_NONINTERACTIVE_SEEN=true
 
-print_info "Installing VNC server and desktop environment..."
+sudo apt update
+sudo apt install -y locales
+sudo locale-gen en_US.UTF-8
+sudo update-locale LANG=en_US.UTF-8
+sudo debconf-set-selections <<< "keyboard-configuration keyboard-configuration/layoutcode string us"
+sudo debconf-set-selections <<< "keyboard-configuration keyboard-configuration/modelcode string pc105"
 sudo apt install -y \
     tigervnc-standalone-server \
     xfce4 \
@@ -8,7 +14,7 @@ sudo apt install -y \
     xterm \
     dbus-x11
 
-print_info "Installing noVNC and websockify..."
+
 sudo apt install -y \
     novnc \
     websockify
@@ -35,9 +41,14 @@ curl -fsSL https://opencode.ai/install | bash
 grep -qxF "alias oc='~/.opencode/bin/opencode'" ~/.bashrc || echo "alias oc='~/.opencode/bin/opencode'" >> ~/.bashrc
 
 
+source /root/.bashrc
+oc -v
 sudo apt install python3-tk  python3-dev -y
 pip install pyautogui pyperclip pillow pyscreeze
 pip install jupyterlab
+cd /content
+
+sudo fuser -k 8889/tcp
 
 nohup jupyter lab \
   --no-browser \
@@ -58,9 +69,13 @@ ln -s ~/mcp /content/mcp
 cd /content/mcp/app
 npm install
 npm install -g electron
+grep -qxF "alias el='/root/.nvm/versions/node/v22.22.0/bin/electron'" ~/.bashrc || echo "alias el='/root/.nvm/versions/node/v22.22.0/bin/electron'" >> ~/.bashrc
+
 rm -rf /content/electron-mcp
 mkdir /content/electron-mcp
 ln -s /root/electron-mcp /content/electron-mcp
+touch /content/electron-mcp/token-dev.txt
+touch /content/electron-mcp/menu.json
 source ~/gcs-env.sh
 cd /content/cicy-remote/colab
 
@@ -68,5 +83,5 @@ sh vnc-install.sh
 
 ps aux | grep cloudflared
 ps aux | grep jupyter
-curl http://localhost:8889/lab
+curl -iL http://localhost:8889/lab
 curl http://localhost:6080

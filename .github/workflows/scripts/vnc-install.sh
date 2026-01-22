@@ -115,6 +115,12 @@ create_startup_scripts() {
 # Unset session managers
 unset SESSION_MANAGER
 unset DBUS_SESSION_BUS_ADDRESS
+
+
+# ---- Disable XFCE Power Manager ----
+xfconf-query -c xfce4-power-manager -p /xfce4-power-manager/enabled -s false 2>/dev/null || true
+pkill xfce4-power-manager 2>/dev/null || true
+
 cd ~/mcp/app
 nohup npm start &
 
