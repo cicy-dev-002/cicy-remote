@@ -1,7 +1,7 @@
 #rm -rf /root/cloudflare-python-workers
 if [ ! -d "/root/cloudflare-python-workers" ]; then
     echo "Cloning cloudflare-python-workers..."
-    git clone https://github.com/cicybot/cloudflare-python-workers.git /root/cloudflare-python-workers
+    git clone https://$GH_CICYBOT_TOKEN@github.com/cicybot/cloudflare-python-workers.git /root/cloudflare-python-workers
     cd /root/cloudflare-python-workers
 else
     cd /root/cloudflare-python-workers
