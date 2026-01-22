@@ -5,9 +5,3 @@ pkill cloudflared
 nohup cloudflared tunnel run --token "$CF_TUNNEL" > ~/tunnel.log 2>&1 &
 
 ps aux | grep cloudflared
-npm install -g opencode-ai
-
-grep -qxF "alias oc='~/.opencode/bin/opencode'" ~/.bashrc || echo "alias oc='~/.opencode/bin/opencode'" >> ~/.bashrc
-
-source ~/.bashrc
-

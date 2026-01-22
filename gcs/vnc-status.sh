@@ -57,7 +57,6 @@ if pgrep -f "Xtigervnc $VNC_DISPLAY" > /dev/null; then
     echo -e "${BLUE}📱 Connection Information:${NC}"
     echo -e "   Web: ${YELLOW}http://$IP:$NOVNC_PORT/vnc.html${NC}"
     echo -e "   VNC: ${YELLOW}$IP:5901${NC}"
-    echo -e "   Password: ${YELLOW}vnc123456${NC}"
 fi
 
 echo ""
