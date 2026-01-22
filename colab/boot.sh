@@ -38,12 +38,9 @@ nvm use 22
 node -v
 
 curl -fsSL https://opencode.ai/install | bash
-
-
 grep -qxF "alias oc='~/.opencode/bin/opencode'" ~/.bashrc || echo "alias oc='~/.opencode/bin/opencode'" >> ~/.bashrc
-
-
 source /root/.bashrc
+
 oc -v
 sudo apt install python3-tk  python3-dev -y
 pip install pyautogui pyperclip pillow pyscreeze
@@ -76,7 +73,6 @@ touch /root/electron-mcp/token-dev.txt
 touch /root/electron-mcp/menu.json
 source ~/gcs-env.sh
 cd /root/cicy-remote/colab
-cd ~/
 sh vnc-install.sh
 cd ~/
 ps aux | grep cloudflared
