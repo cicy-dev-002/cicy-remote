@@ -5,10 +5,13 @@ pip install pyautogui pyperclip pillow pyscreeze
 pip install jupyter jupyterlab
 npm install -g electron
 
+curl -fsSL https://opencode.ai/install | bash
+
 if [ ! -f ~/gcs-env.sh ]; then
   echo "export CF_TUNNEL=" > ~/gcs-env.sh
   echo "export JUPYTER_TOKEN=" > ~/gcs-env.sh
 fi
+
 grep -qxF "source ~/gcs-env.sh'" ~/.bashrc || echo "source ~/gcs-env.sh" >> ~/.bashrc
 grep -qxF "alias oc='~/.opencode/bin/opencode'" ~/.bashrc || echo "alias oc='~/.opencode/bin/opencode'" >> ~/.bashrc
 

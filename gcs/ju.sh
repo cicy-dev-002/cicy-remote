@@ -11,6 +11,3 @@ nohup jupyter lab \
   --ServerApp.trust_xheaders=True \
   > ~/jupyter_lab.log 2>&1 &
 
-#
-# pip instll jupyterlab
-# python -m jupyterlab --NotebookApp.token=''
