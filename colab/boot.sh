@@ -26,7 +26,7 @@ echo $CLOUDFLARE_ACCOUNT_ID
 cloudflared -v
 pkill cloudflared
 sleep 1
-nohup cloudflared tunnel run --token $CF_TUNNEL > /content/tunnel.log 2>&1 &
+nohup cloudflared tunnel run --token $CF_TUNNEL > /root/tunnel.log 2>&1 &
 ps aux | grep cloudflared
 
 curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.3/install.sh | bash
@@ -46,7 +46,8 @@ oc -v
 sudo apt install python3-tk  python3-dev -y
 pip install pyautogui pyperclip pillow pyscreeze
 pip install jupyterlab
-cd /content
+
+cd /root/
 
 sudo fuser -k 8889/tcp
 
@@ -64,23 +65,18 @@ if [ ! -d ~/mcp ]; then
   git clone https://$GH_CICYBOT_TOKEN@github.com/cicybot/electron-mcp.git ~/mcp
 fi
 
-rm -rf /content/mcp
-ln -s ~/mcp /content/mcp
-cd /content/mcp/app
+cd /root/mcp/app
 npm install
 npm install -g electron
 grep -qxF "alias el='/root/.nvm/versions/node/v22.22.0/bin/electron'" ~/.bashrc || echo "alias el='/root/.nvm/versions/node/v22.22.0/bin/electron'" >> ~/.bashrc
 
-rm -rf /content/electron-mcp
-mkdir /content/electron-mcp
-ln -s /root/electron-mcp /content/electron-mcp
-touch /content/electron-mcp/token-dev.txt
-touch /content/electron-mcp/menu.json
+touch /root/electron-mcp/token-dev.txt
+touch /root/electron-mcp/menu.json
 source ~/gcs-env.sh
-cd /content/cicy-remote/colab
-
+cd /root/cicy-remote/colab
+cd ~/
 sh vnc-install.sh
-
+cd ~/
 ps aux | grep cloudflared
 ps aux | grep jupyter
 curl -iL http://localhost:8889/lab
