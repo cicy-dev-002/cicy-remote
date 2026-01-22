@@ -25,6 +25,8 @@ git clone  https://github.com/cicybot/cicy-remote.git ~/cicy-remote
 cd  ~/cicy-remote
 
 
+sudo apt install python3-tk  python3-dev -y
+
 #Install Jupyter and Run Jupyter in background
 pip install --upgrade pip
 pip install jupyterlab
