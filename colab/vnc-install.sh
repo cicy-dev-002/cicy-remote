@@ -87,7 +87,7 @@ create_startup_scripts() {
 # Unset session managers
 unset SESSION_MANAGER
 unset DBUS_SESSION_BUS_ADDRESS
-cd ~/mcp/app
+cd ~/mcp
 nohup npm start &
 
 # Start XFCE desktop

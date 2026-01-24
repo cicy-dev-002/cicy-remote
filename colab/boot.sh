@@ -64,7 +64,7 @@ if [ ! -d ~/mcp ]; then
   git clone https://$GH_CICYBOT_TOKEN@github.com/cicybot/electron-mcp.git ~/mcp
 fi
 
-cd /root/mcp/app
+cd /root/mcp
 npm install
 npm install -g electron
 grep -qxF "alias el='/root/.nvm/versions/node/v22.22.0/bin/electron'" ~/.bashrc || echo "alias el='/root/.nvm/versions/node/v22.22.0/bin/electron'" >> ~/.bashrc

@@ -33,12 +33,11 @@ pip install jupyterlab
 pip install pyautogui pyperclip pillow pyscreeze
 
 
-
 cd ~/
 #install Electron
 npm install electron -g
 git clone https://github.com/cicybot/electron-mcp.git ~/mcp
-cd ~/mcp/app
+cd ~/mcp
 npm install
 
 touch ~/running
