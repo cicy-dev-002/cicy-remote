@@ -13,8 +13,6 @@ nohup cloudflared tunnel run --token $CF_TUNNEL > /root/tunnel.log 2>&1 &
 ps aux | grep cloudflared
 
 
-
-
 if [ ! -d ~/mcp ]; then
   git clone https://$GH_CICYBOT_TOKEN@github.com/cicybot/electron-mcp.git ~/mcp
 fi
