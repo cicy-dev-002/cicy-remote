@@ -1,7 +1,7 @@
 
 ## jupyter
 pkill -f jupyter
-
+cd ~/
 nohup jupyter lab \
   --no-browser \
   --IdentityProvider.token=$JUPYTER_TOKEN \

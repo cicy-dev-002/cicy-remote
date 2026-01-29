@@ -1,3 +1,4 @@
+ls
 
 docker rm -f redis
 docker run -itd \
