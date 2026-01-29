@@ -107,9 +107,7 @@ Write-Host "Establishing Cloudflared connection..."
 & "C:\Program Files (x86)\cloudflared\cloudflared.exe" service install $env:CF_TUNNEL
 Write-Host "Cloudflared service installed."
 
-
 Start-Process "C:\Program Files (x86)\cloudflared\cloudflared.exe" -ArgumentList "access smb --hostname gcs-smb.cicy.de5.net --url 127.0.0.1:4445" -WindowStyle Hidden; Start-Sleep 2; Get-Process cloudflared
-
 
 Write-Host "Installing pip..."
 pip install pyautogui pyperclip jupyterlab pillow pyscreeze
@@ -119,7 +117,7 @@ Write-Host "pip installed."
 Write-Host "Checking Jupyter version..."
 jupyter --version
 Write-Host "Jupyter version checked."
-
+cd D:\
 Write-Host "Starting Jupyter Lab..."
 Start-Process `
 -FilePath "jupyter" `
