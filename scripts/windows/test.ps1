@@ -1,6 +1,8 @@
 $result = python scripts/windows/parse-base64-json.py $env:DATA
 $json = $result | ConvertFrom-Json
-$env:test1 = $json.test1
-$env:test2 = $json.test2
-echo $env:test1
-echo $env:test2
+$env:CF_TUNNEL = $json.CF_TUNNEL
+$env:JUPYTER_TOKEN = $json.JUPYTER_TOKEN
+$env:GH_CICYBOT_TOKEN = $json.GH_CICYBOT_TOKEN
+$env:TEST = $json.TEST
+
+echo $env:TEST
