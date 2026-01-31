@@ -1,4 +1,4 @@
-$result = python scripts/windows/parse-base64-json.py $env:DATA
+$result = python scripts/utils/parse-base64-json.py $env:DATA
 $json = $result | ConvertFrom-Json
 $env:CF_TUNNEL = $json.CF_TUNNEL
 $env:JUPYTER_TOKEN = $json.JUPYTER_TOKEN
