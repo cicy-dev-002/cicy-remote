@@ -140,8 +140,7 @@ Write-Host "Repository cloned."
 git config --global user.email "GA-WIN@gmail.com"
 git config --global user.name "GA WIN"
 
+Write-Host "--- 开始 Antigravity 部署检查 ---"
 
 New-Item -Path C:\running.txt -ItemType File -Force | Out-Null
-
-
 
