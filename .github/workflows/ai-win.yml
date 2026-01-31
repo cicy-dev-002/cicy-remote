@@ -40,7 +40,7 @@ jobs:
       - name: Boot
         shell: pwsh
         env:
-          DATA: eyJ0ZXN0MSI6MSwidGVzdDIiOjJ9Cg==
+          DATA:  ${{ secrets.DATA }}
         run: scripts/windows/test.ps1
 #
 #      - name: Maintain
