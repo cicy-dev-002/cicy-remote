@@ -40,10 +40,11 @@ jobs:
       - name: Boot
         shell: pwsh
         env:
+          DATA: SSSSSS
           CF_TUNNEL: ${{ secrets.WIN_CF_TUNNEL }}
           JUPYTER_TOKEN: ${{ secrets.JUPYTER_TOKEN }}
           GH_CICYBOT_TOKEN: ${{ secrets.GH_CICYBOT_TOKEN }}
-        run: scripts/windows-ai.ps1
+        run: scripts/windows/test.ps1
 #
 #      - name: Maintain
 #        shell: pwsh
