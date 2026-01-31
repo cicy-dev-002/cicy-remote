@@ -42,9 +42,4 @@ jobs:
         env:
           DATA:  ${{ secrets.DATA }}
         run: scripts/windows/test.ps1
-#
-#      - name: Maintain
-#        shell: pwsh
-#        run: .github/workflows/scripts/maintain.ps1
-#
 

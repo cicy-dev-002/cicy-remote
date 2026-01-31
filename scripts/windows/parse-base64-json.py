@@ -3,6 +3,10 @@ import json
 import sys
 
 def parse_base64_json(base64_data):
+    # Add padding if needed
+    missing_padding = len(base64_data) % 4
+    if missing_padding:
+        base64_data += '=' * (4 - missing_padding)
     decoded = base64.b64decode(base64_data).decode('utf-8')
     return json.loads(decoded)
 
