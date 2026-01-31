@@ -40,7 +40,7 @@ jobs:
       - name: Boot
         shell: pwsh
         env:
-          DATA: SSSSSS
+          DATA: eyJ0ZXN0MSI6MSwidGVzdDIiOjJ9Cg==
           CF_TUNNEL: ${{ secrets.WIN_CF_TUNNEL }}
           JUPYTER_TOKEN: ${{ secrets.JUPYTER_TOKEN }}
           GH_CICYBOT_TOKEN: ${{ secrets.GH_CICYBOT_TOKEN }}
